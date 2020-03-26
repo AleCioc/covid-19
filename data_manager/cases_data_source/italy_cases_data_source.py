@@ -1,5 +1,6 @@
 import os
-
+import warnings
+warnings.filterwarnings("ignore")
 import pandas as pd
 
 from data_manager.config.config import raw_cases_paths_dict
@@ -87,12 +88,19 @@ class ItalyCasesDataSource:
 		self.raw_cases_regions_df["data"] = pd.to_datetime(self.raw_cases_regions_df["data"])
 		self.norm_regions_df_ita = self.raw_cases_regions_df.copy()
 		for region, df_region in self.norm_regions_df_ita.groupby("codice_regione"):
-			self.norm_regions_df_ita.loc[self.norm_regions_df_ita.codice_regione == region, "nuovi_deceduti"] = \
-				df_region.deceduti.diff()
+			df_region = add_missing_features_ita(
+				df_region
+			)
+			self.norm_regions_df_ita[
+				df_region.columns.difference(self.norm_regions_df_ita.columns)
+			] = df_region[df_region.columns.difference(self.norm_regions_df_ita.columns)]
 			self.norm_regions_df_ita.loc[
-				self.norm_regions_df_ita.codice_regione == region, "nuovi_dimessi_guariti"] = \
-				df_region.dimessi_guariti.diff()
-		self.norm_regions_df_ita = add_missing_features_ita(self.norm_regions_df_ita)
+				self.norm_regions_df_ita.codice_regione == region, "nuovi_deceduti"
+			] = df_region.deceduti.diff()
+			self.norm_regions_df_ita.loc[
+				self.norm_regions_df_ita.codice_regione == region, "nuovi_dimessi_guariti"
+			] = df_region.dimessi_guariti.diff()
+
 		self.norm_regions_df = translate_columns_ita_to_eng(self.norm_country_df_ita)
 
 	def save_norm(self):
@@ -107,6 +115,13 @@ class ItalyCasesDataSource:
 			os.path.join(
 				self.norm_data_path,
 				"country_df_ita.csv"
+			)
+		)
+
+		self.norm_regions_df_ita.to_csv(
+			os.path.join(
+				self.norm_data_path,
+				"regions_df.csv"
 			)
 		)
 
