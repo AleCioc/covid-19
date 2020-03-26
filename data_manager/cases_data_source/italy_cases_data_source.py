@@ -6,6 +6,47 @@ from data_manager.config.config import raw_cases_paths_dict
 from data_manager.config.config import norm_cases_paths
 
 
+def translate_columns_ita_to_eng(ita_df):
+	return ita_df.rename({
+		"data": "datetime",
+		"ricoverati_con_sintomi": "currently_hospitalised",
+		"terapia_intensiva": "currently_intensive_care",
+		"totale_ospedalizzati": "total_currently_hospitalised",
+		"isolamento_domiciliare": "currently_home_isolation",
+		"totale_attualmente_positivi": "total_currently_positives",
+		"nuovi_attualmente_positivi": "new_currently_positives",
+		"dimessi_guariti": "total_recovered",
+		"deceduti": "total_deaths",
+		"tamponi": "total_tests",
+	}, axis=1)
+
+
+def add_missing_features_ita(cases_df_ita):
+	cases_df_ita["totale_positivi_conclusi"] = \
+		cases_df_ita.deceduti + cases_df_ita.dimessi_guariti
+	cases_df_ita["nuovi_deceduti"] = cases_df_ita.deceduti.diff()
+	cases_df_ita["nuovi_dimessi_guariti"] = cases_df_ita.dimessi_guariti.diff()
+	cases_df_ita["nuovi_positivi_conclusi"] = \
+		cases_df_ita.nuovi_deceduti + cases_df_ita.nuovi_dimessi_guariti
+	cases_df_ita["nuovi_positivi_totali"] = \
+		cases_df_ita.nuovi_attualmente_positivi + cases_df_ita.nuovi_positivi_conclusi
+	cases_df_ita["totale_casi_attivi"] = \
+		cases_df_ita.totale_casi - cases_df_ita.totale_positivi_conclusi
+	return cases_df_ita
+
+
+def add_missing_features_eng(cases_df):
+	cases_df["total_concluded_cases"] = \
+		cases_df.total_deaths + cases_df.total_recovered
+	cases_df["new_deaths"] = cases_df.total_deaths.diff()
+	cases_df["new_recovered"] = cases_df.total_recovered.diff()
+	cases_df["new_concluded_cases"] = \
+		cases_df.new_deaths + cases_df.new_recovered
+	cases_df["new_total_positives"] = \
+		cases_df.new_currently_positives + cases_df.new_concluded_cases
+	return cases_df
+
+
 class ItalyCasesDataSource:
 
 	def __init__(self):
@@ -38,39 +79,21 @@ class ItalyCasesDataSource:
 	def normalise(self):
 
 		self.raw_cases_country_df["data"] = pd.to_datetime(self.raw_cases_country_df["data"])
-
 		self.norm_country_df_ita = self.raw_cases_country_df.copy()
-		self.norm_country_df_ita["nuovi_deceduti"] = self.norm_country_df_ita.deceduti.diff()
-		self.norm_country_df_ita["nuovi_dimessi_guariti"] = self.norm_country_df_ita.dimessi_guariti.diff()
-		self.norm_country_df_ita["nuovi_positivi_conclusi"] = \
-			self.norm_country_df_ita.nuovi_deceduti + self.norm_country_df_ita.nuovi_dimessi_guariti
-		self.norm_country_df_ita["totale_positivi_conclusi"] = \
-			self.norm_country_df_ita.deceduti + self.norm_country_df_ita.dimessi_guariti
-		self.norm_country_df_ita["nuovi_positivi_totali"] = \
-			self.norm_country_df_ita.nuovi_attualmente_positivi + self.norm_country_df_ita.nuovi_positivi_conclusi
-		self.norm_country_df_ita["totale_casi_attivi"] = \
-			self.norm_country_df_ita.totale_casi - self.norm_country_df_ita.totale_positivi_conclusi
+		self.norm_country_df_ita = add_missing_features_ita(self.norm_country_df_ita)
+		self.norm_country_df = translate_columns_ita_to_eng(self.norm_country_df_ita)
+		self.norm_country_df = add_missing_features_eng(self.norm_country_df)
 
-		self.norm_country_df = self.raw_cases_country_df.rename({
-			"data": "datetime",
-			"ricoverati_con_sintomi": "currently_hospitalised",
-			"terapia_intensiva": "currently_intensive_care",
-			"totale_ospedalizzati": "total_currently_hospitalised",
-			"isolamento_domiciliare": "currently_home_isolation",
-			"totale_attualmente_positivi": "total_currently_positives",
-			"nuovi_attualmente_positivi": "new_currently_positives",
-			"dimessi_guariti": "total_recovered",
-			"deceduti": "total_deaths",
-			"tamponi": "total_tests",
-		}, axis=1)
-		self.norm_country_df["total_concluded_cases"] = \
-			self.norm_country_df.total_deaths + self.norm_country_df.total_recovered
-		self.norm_country_df["new_deaths"] = self.norm_country_df.total_deaths.diff()
-		self.norm_country_df["new_recovered"] = self.norm_country_df.total_recovered.diff()
-		self.norm_country_df["new_concluded_cases"] = \
-			self.norm_country_df.new_deaths + self.norm_country_df.new_recovered
-		self.norm_country_df["new_total_positives"] = \
-			self.norm_country_df.new_currently_positives + self.norm_country_df.new_concluded_cases
+		self.raw_cases_regions_df["data"] = pd.to_datetime(self.raw_cases_regions_df["data"])
+		self.norm_regions_df_ita = self.raw_cases_regions_df.copy()
+		for region, df_region in self.norm_regions_df_ita.groupby("codice_regione"):
+			self.norm_regions_df_ita.loc[self.norm_regions_df_ita.codice_regione == region, "nuovi_deceduti"] = \
+				df_region.deceduti.diff()
+			self.norm_regions_df_ita.loc[
+				self.norm_regions_df_ita.codice_regione == region, "nuovi_dimessi_guariti"] = \
+				df_region.dimessi_guariti.diff()
+		self.norm_regions_df_ita = add_missing_features_ita(self.norm_regions_df_ita)
+		self.norm_regions_df = translate_columns_ita_to_eng(self.norm_country_df_ita)
 
 	def save_norm(self):
 

@@ -13,20 +13,4 @@ italy_cases_ds.save_norm()
 country_df = italy_cases_ds.norm_country_df_ita
 #country_df = italy_cases_ds.load_norm()
 
-plot_line_bokeh(
-    country_df.set_index("data")[[
-        'tamponi',
-        'totale_casi',
-    ]],
-    root_figures_path,
-    "tamponi_casi"
-)
-
-plot_line_bokeh(
-    country_df.set_index("data")[[
-        'nuovi_attualmente_positivi',
-        'nuovi_positivi_totali',
-    ]],
-    root_figures_path,
-    "nuovi_positivi"
-)
+plot_country_dashboard_ita(country_df, root_figures_path, "dashboard_italia")
