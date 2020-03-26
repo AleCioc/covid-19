@@ -23,28 +23,31 @@ def translate_columns_ita_to_eng(ita_df):
 
 
 def add_missing_features_ita(cases_df_ita):
-	cases_df_ita["totale_positivi_conclusi"] = \
-		cases_df_ita.deceduti + cases_df_ita.dimessi_guariti
+
+	cases_df_ita["totale_positivi_conclusi"] = cases_df_ita.deceduti + cases_df_ita.dimessi_guariti
 	cases_df_ita["nuovi_deceduti"] = cases_df_ita.deceduti.diff()
 	cases_df_ita["nuovi_dimessi_guariti"] = cases_df_ita.dimessi_guariti.diff()
-	cases_df_ita["nuovi_positivi_conclusi"] = \
-		cases_df_ita.nuovi_deceduti + cases_df_ita.nuovi_dimessi_guariti
-	cases_df_ita["nuovi_positivi_totali"] = \
-		cases_df_ita.nuovi_attualmente_positivi + cases_df_ita.nuovi_positivi_conclusi
-	cases_df_ita["totale_casi_attivi"] = \
-		cases_df_ita.totale_casi - cases_df_ita.totale_positivi_conclusi
+	cases_df_ita["nuovi_positivi_conclusi"] = cases_df_ita.nuovi_deceduti + cases_df_ita.nuovi_dimessi_guariti
+	cases_df_ita["nuovi_positivi_totali"] = cases_df_ita.nuovi_attualmente_positivi + cases_df_ita.nuovi_positivi_conclusi
+
+	cases_df_ita["tasso_tamponi_positivi"] = cases_df_ita['totale_casi'] / cases_df_ita['tamponi']
+	cases_df_ita["tasso_nuovi_positivi"] = cases_df_ita['nuovi_positivi_totali'] / cases_df_ita['totale_casi']
+	cases_df_ita["tasso_mortalita"] = cases_df_ita['deceduti'] / cases_df_ita['totale_casi']
+	cases_df_ita["tasso_guarigione"] = cases_df_ita['dimessi_guariti'] / cases_df_ita['totale_casi']
+
+	cases_df_ita["tasso_ricoverati_con_sintomi"] = (cases_df_ita['ricoverati_con_sintomi'] / cases_df_ita['totale_attualmente_positivi'])
+	cases_df_ita["tasso_terapia_intensiva"] = (cases_df_ita['terapia_intensiva'] / cases_df_ita['totale_attualmente_positivi'])
+	cases_df_ita["tasso_terapia_intensiva_ricoverati"] = (cases_df_ita['terapia_intensiva'] / cases_df_ita['ricoverati_con_sintomi'])
+
 	return cases_df_ita
 
 
 def add_missing_features_eng(cases_df):
-	cases_df["total_concluded_cases"] = \
-		cases_df.total_deaths + cases_df.total_recovered
+	cases_df["total_concluded_cases"] = cases_df.total_deaths + cases_df.total_recovered
 	cases_df["new_deaths"] = cases_df.total_deaths.diff()
 	cases_df["new_recovered"] = cases_df.total_recovered.diff()
-	cases_df["new_concluded_cases"] = \
-		cases_df.new_deaths + cases_df.new_recovered
-	cases_df["new_total_positives"] = \
-		cases_df.new_currently_positives + cases_df.new_concluded_cases
+	cases_df["new_concluded_cases"] = cases_df.new_deaths + cases_df.new_recovered
+	cases_df["new_total_positives"] = cases_df.new_currently_positives + cases_df.new_concluded_cases
 	return cases_df
 
 
@@ -81,7 +84,7 @@ class ItalyCasesDataSource:
 
 		self.raw_cases_country_df["data"] = pd.to_datetime(self.raw_cases_country_df["data"])
 		self.norm_country_df_ita = self.raw_cases_country_df.copy()
-		self.norm_country_df_ita = add_missing_features_ita(self.norm_country_df_ita)
+		self.norm_country_df_ita = add_missing_features_ita(self.norm_country_df_ita.fillna(0))
 		self.norm_country_df = translate_columns_ita_to_eng(self.norm_country_df_ita)
 		self.norm_country_df = add_missing_features_eng(self.norm_country_df)
 
@@ -89,17 +92,12 @@ class ItalyCasesDataSource:
 		self.norm_regions_df_ita = self.raw_cases_regions_df.copy()
 		for region, df_region in self.norm_regions_df_ita.groupby("codice_regione"):
 			df_region = add_missing_features_ita(
-				df_region
+				df_region.fillna(0)
 			)
-			self.norm_regions_df_ita[
-				df_region.columns.difference(self.norm_regions_df_ita.columns)
-			] = df_region[df_region.columns.difference(self.norm_regions_df_ita.columns)]
-			self.norm_regions_df_ita.loc[
-				self.norm_regions_df_ita.codice_regione == region, "nuovi_deceduti"
-			] = df_region.deceduti.diff()
-			self.norm_regions_df_ita.loc[
-				self.norm_regions_df_ita.codice_regione == region, "nuovi_dimessi_guariti"
-			] = df_region.dimessi_guariti.diff()
+			for col in df_region:
+				self.norm_regions_df_ita[col] = df_region[col].copy()
+
+		print(self.norm_regions_df_ita.columns)
 
 		self.norm_regions_df = translate_columns_ita_to_eng(self.norm_country_df_ita)
 

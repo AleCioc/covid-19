@@ -13,7 +13,6 @@ def plot_line_bokeh (df):
 
     p = figure(x_axis_type="datetime")
     p.legend.click_policy="hide"
-    print(df.index)
     p = df.plot_bokeh(
         kind="line",
         marker="o",
@@ -38,20 +37,39 @@ def plot_lines_dashboard_ita(cases_df, figures_path, filename):
 
     p1 = plot_line_bokeh(
         cases_df.set_index("data")[[
-            'tamponi',
-            'totale_casi',
+            col for col in cases_df.set_index("data")
+            if not col.startswith("nuovi")
+            and not col.startswith("tasso")
+            and not col.startswith("totale")
+            and col != "tamponi"
         ]],
     )
 
     p2 = plot_line_bokeh(
         cases_df.set_index("data")[[
-            'nuovi_attualmente_positivi',
-            'nuovi_positivi_totali',
+            col for col in cases_df.set_index("data")
+            if col.startswith("totale")
+        ]],
+    )
+
+    p3 = plot_line_bokeh(
+        cases_df.set_index("data")[[
+            col for col in cases_df.set_index("data")
+            if col.startswith("nuovi")
+        ]],
+    )
+
+
+    p4 = plot_line_bokeh(
+        cases_df.set_index("data")[[
+            col for col in cases_df.set_index("data")
+            if col.startswith("tasso")
         ]],
     )
 
     plot_grid = pandas_bokeh.plot_grid([
         [p1, p2],
+        [p3, p4]
     ])
 
     pandas_bokeh.save(plot_grid)
