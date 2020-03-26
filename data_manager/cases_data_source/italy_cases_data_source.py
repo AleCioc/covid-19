@@ -37,6 +37,8 @@ class ItalyCasesDataSource:
 
 	def normalise(self):
 
+		self.raw_cases_country_df["data"] = pd.to_datetime(self.raw_cases_country_df["data"])
+
 		self.norm_country_df_ita = self.raw_cases_country_df.copy()
 		self.norm_country_df_ita["nuovi_deceduti"] = self.norm_country_df_ita.deceduti.diff()
 		self.norm_country_df_ita["nuovi_dimessi_guariti"] = self.norm_country_df_ita.dimessi_guariti.diff()

@@ -1,3 +1,4 @@
 pandas==1.0.3
 bokeh==2.0.0
 pandas-bokeh==0.4.2
+GitPython==3.1.0
