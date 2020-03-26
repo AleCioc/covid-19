@@ -16,7 +16,7 @@ class ItalyCasesDataSource:
 				"dati-andamento-nazionale",
 				"dpc-covid19-ita-andamento-nazionale.csv"
 			)
-		).dropna()
+		).drop(["note_it", "note_en"], axis=1).dropna()
 
 		self.norm_data_path = os.path.join(
 			norm_cases_paths,
@@ -30,7 +30,10 @@ class ItalyCasesDataSource:
 				"dati-regioni",
 				"dpc-covid19-ita-regioni.csv"
 			)
-		).dropna()
+		).drop(["note_it", "note_en"], axis=1).dropna()
+
+		self.norm_country_df_ita = pd.DataFrame()
+		self.norm_country_df = pd.DataFrame()
 
 	def normalise(self):
 
@@ -46,7 +49,7 @@ class ItalyCasesDataSource:
 		self.norm_country_df_ita["totale_casi_attivi"] = \
 			self.norm_country_df_ita.totale_casi - self.norm_country_df_ita.totale_positivi_conclusi
 
-		self.norm_country_df_eng = self.raw_cases_country_df.rename({
+		self.norm_country_df = self.raw_cases_country_df.rename({
 			"data": "datetime",
 			"ricoverati_con_sintomi": "currently_hospitalised",
 			"terapia_intensiva": "currently_intensive_care",
@@ -58,18 +61,18 @@ class ItalyCasesDataSource:
 			"deceduti": "total_deaths",
 			"tamponi": "total_tests",
 		}, axis=1)
-		self.norm_country_df_eng["total_concluded_cases"] = \
-			self.norm_country_df_eng.total_deaths + self.norm_country_df_eng.total_recovered
-		self.norm_country_df_eng["new_deaths"] = self.norm_country_df_eng.total_deaths.diff()
-		self.norm_country_df_eng["new_recovered"] = self.norm_country_df_eng.total_recovered.diff()
-		self.norm_country_df_eng["new_concluded_cases"] = \
-			self.norm_country_df_eng.new_deaths + self.norm_country_df_eng.new_recovered
-		self.norm_country_df_eng["new_total_positives"] = \
-			self.norm_country_df_eng.new_currently_positives + self.norm_country_df_eng.new_concluded_cases
+		self.norm_country_df["total_concluded_cases"] = \
+			self.norm_country_df.total_deaths + self.norm_country_df.total_recovered
+		self.norm_country_df["new_deaths"] = self.norm_country_df.total_deaths.diff()
+		self.norm_country_df["new_recovered"] = self.norm_country_df.total_recovered.diff()
+		self.norm_country_df["new_concluded_cases"] = \
+			self.norm_country_df.new_deaths + self.norm_country_df.new_recovered
+		self.norm_country_df["new_total_positives"] = \
+			self.norm_country_df.new_currently_positives + self.norm_country_df.new_concluded_cases
 
 	def save_norm(self):
 
-		self.norm_country_df_eng.to_csv(
+		self.norm_country_df.to_csv(
 			os.path.join(
 				self.norm_data_path,
 				"country_df.csv"
@@ -81,3 +84,20 @@ class ItalyCasesDataSource:
 				"country_df_ita.csv"
 			)
 		)
+
+	def load_norm(self):
+		data_path = os.path.join(
+			os.path.join(
+				self.norm_data_path,
+				"country_df.csv"
+			)
+		)
+		self.norm_country_df = pd.read_csv(data_path, index_col=0)
+		data_path = os.path.join(
+			os.path.join(
+				self.norm_data_path,
+				"country_df_ita.csv"
+			)
+		)
+		self.norm_country_df_ita = pd.read_csv(data_path, index_col=0)
+		return self.norm_country_df_ita
