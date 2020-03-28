@@ -1,0 +1,60 @@
+<!doctype html>
+
+<html lang="en" id="all">
+<head>
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    {{ resources }}
+    <title>Dashbord covid</title>
+
+    <script>
+        function select() {
+            var e
+            e =document.getElementById("country");
+            var country = e.options[e.selectedIndex].value;
+            e = document.getElementById("region");
+            var region = e.options[e.selectedIndex].value;
+            e = document.getElementById("type");
+            var type = e.options[e.selectedIndex].value;
+            if (country !== ""  && region!=="" && type !== "")
+            {
+                document.getElementById("myplot").innerHTML = "";
+                fetch('/' + country + '/' + region + '/' + type)
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (item) {
+                        Bokeh.embed.embed_item(item, "myplot");
+                    })
+            }
+        }
+    </script>
+
+</head>
+
+<label for="country"></label><select id="country" onchange="select()">
+    <option value="">country</option>
+    <option value="italy">italy</option>
+</select>
+
+<label for="region"></label><select id="region" onchange="select()">
+    <option value="">region</option>
+    <option value="abruzzo">abruzzo</option>
+</select>
+
+<label for="type"></label><select id="type" onchange="select()">
+    <option value="">graf</option>
+    <option value="nuovi">nuovi</option>
+    <option value="tasso">tasso</option>
+</select>
+
+<body>
+<div id="myplot"></div>
+
+<script>
+
+</script>
+
+</body>
+</html>

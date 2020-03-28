@@ -113,8 +113,7 @@ venv.bak/
 .idea/
 
 
-#html
-*.html
+
 
 #exe
 *.exe

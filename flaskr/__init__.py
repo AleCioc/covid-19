@@ -1,7 +1,17 @@
-import os
+from __future__ import print_function
+import json
 
+from bokeh.embed import json_item
+from bokeh.plotting import figure
+from bokeh.resources import CDN
+from bokeh.sampledata.iris import flowers
 from threading import Thread
 from time import sleep
+from data_manager.cases_data_source.italy_cases_data_source import ItalyCasesDataSource
+
+from data_manager.config.config import *
+
+from data_manager.plotter.bokeh_plotter import *
 
 from flask import Flask, render_template
 
@@ -9,37 +19,66 @@ from data_manager import root_figures_path
 from data_manager.cases_data_source.italy_cases_data_source import ItalyCasesDataSource
 from data_manager.plotter.bokeh_plotter import plot_lines_dashboard_ita
 
+from flask import Flask
+from jinja2 import Template
+
+app = Flask(__name__)
+
+
+colormap = {'setosa': 'red', 'versicolor': 'green', 'virginica': 'blue'}
+colors = [colormap[x] for x in flowers['species']]
+
+
+
+
+@app.route("/")
+def index():
+    page = Template(open("templates\\index.html", "r").read())
+    return page.render(resources=CDN.render())
+
+
+@app.route('/<country>/<region>/<type>')
+def dash(country, region, type):
+    with open('static\\' + country + '\\' + region + '\\' + type + '.json') as json_file:
+        return json.load(json_file)
+
+
+
+
+
+
+
 
 class Bk_worker(Thread):
     def run(self):
         while True:
             italy_cases_ds = ItalyCasesDataSource()
             italy_cases_ds.normalise()
-            italy_cases_ds.save_norm()
-            country_df = italy_cases_ds.norm_country_df_ita
+            # italy_cases_ds.save_norm()
             # country_df = italy_cases_ds.load_norm()
-            regions_df = italy_cases_ds.norm_regions_df_ita
 
-            plot_lines_dashboard_ita(country_df, root_figures_path, "dashboard_italia")
+            country_df = italy_cases_ds.norm_country_df_ita.set_index("data")
+            regions_df = italy_cases_ds.norm_regions_df_ita.set_index("data")
+            country_df["datetime"] = country_df.index.values
+            country_df["data"] = country_df["datetime"].apply(lambda d: str(d.date()))
+
+            country_path = os.path.join(
+                italy_figures_path,
+                "country"
+            )
+            os.makedirs(country_path, exist_ok=True)
+            plot_lines_dashboard_ita(country_df, country_path)
             for region, df_region in regions_df.groupby("denominazione_regione"):
-                plot_lines_dashboard_ita(df_region, root_figures_path, "dashboard_" + region)
-                break
+                print(region)
+                region_path = os.path.join(
+                    italy_figures_path,
+                    region
+                )
+                os.makedirs(region_path, exist_ok=True)
+                plot_lines_dashboard_ita(df_region, region_path)
             sleep(1000)
 
 
-def create_app():
-    # create and configure the app
-    app = Flask(__name__, static_url_path="/static")
-
-    #Bk_worker().start()
-
-    # a simple page that says hello
-    @app.route("/")
-    def index():
-        return app.send_static_file("index.html")
-
-    @app.route('/dash/<zone>')
-    def dash(zone):
-        return app.send_static_file("dashboard_" + zone + ".html")
-
-    return app
+if __name__ == '__main__':
+    # Bk_worker().start()
+    app.run()
