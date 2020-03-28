@@ -17,6 +17,17 @@ regions_df = italy_cases_ds.norm_regions_df_ita.set_index("data")
 country_df["datetime"] = country_df.index.values
 country_df["data"] = country_df["datetime"].apply(lambda d: str(d.date()))
 
-plot_lines_dashboard_ita(country_df, root_figures_path, "dashboard_italia")
+country_path = os.path.join(
+    italy_figures_path,
+    "country"
+)
+os.makedirs(country_path, exist_ok=True)
+plot_lines_dashboard_ita(country_df, country_path)
 for region, df_region in regions_df.groupby("denominazione_regione"):
-    plot_lines_dashboard_ita(df_region, root_figures_path, "dashboard_" + region)
+    print(region)
+    region_path = os.path.join(
+        italy_figures_path,
+        region
+    )
+    os.makedirs(region_path, exist_ok=True)
+    plot_lines_dashboard_ita(df_region, region_path)

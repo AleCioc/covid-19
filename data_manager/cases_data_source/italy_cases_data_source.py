@@ -6,10 +6,44 @@ import pandas as pd
 from data_manager.config.config import raw_cases_paths_dict
 from data_manager.config.config import norm_cases_paths
 
+[
+	'data',
+	'stato',
+	'codice_regione',
+	'denominazione_regione',
+	'lat',
+	'long',
+	'ricoverati_con_sintomi',
+	'terapia_intensiva',
+	'totale_ospedalizzati',
+	'isolamento_domiciliare',
+	'totale_attualmente_positivi',
+	'nuovi_attualmente_positivi',
+	'dimessi_guariti',
+	'deceduti',
+	'totale_casi',
+	'tamponi'
+]
+
+
+def rename_columns_ita(ita_df):
+	#ita_df.denominazione_regione = ita_df.denominazione_regione.apply(lambda s: s.replace(" ", "").replace(".", "").lower())
+	return ita_df.rename({
+		"ricoverati_con_sintomi": "attualmente_ricoverati",
+		"terapia_intensiva": "attualmente_terapia_intensiva",
+		"totale_ospedalizzati": "totale_ospedalizzati",
+		"isolamento_domiciliare": "attualmente_isolamento_domiciliare",
+		"dimessi_guariti": "totale_dimessi_guariti",
+		"deceduti": "totale_deceduti",
+		"tamponi": "totale_tamponi",
+	}, axis=1)
+
 
 def translate_columns_ita_to_eng(ita_df):
 	return ita_df.rename({
 		"data": "datetime",
+		"codice_regione": "region_id",
+		"denominazione_regione": "region_name",
 		"ricoverati_con_sintomi": "currently_hospitalised",
 		"terapia_intensiva": "currently_intensive_care",
 		"totale_ospedalizzati": "total_currently_hospitalised",
@@ -77,27 +111,43 @@ class ItalyCasesDataSource:
 			)
 		).drop(["note_it", "note_en"], axis=1).dropna()
 
+		self.raw_cases_country_df["data"] = pd.to_datetime(self.raw_cases_country_df["data"], utc=True)
+		self.raw_cases_regions_df["data"] = pd.to_datetime(self.raw_cases_regions_df["data"], utc=True)
+		self.raw_cases_regions_df["denominazione_regione"] = self.raw_cases_regions_df["denominazione_regione"].apply(
+			lambda s: s.replace(" ", "").replace(".", "").replace("'", "").lower()
+		)
+
 		self.norm_country_df_ita = pd.DataFrame()
 		self.norm_country_df = pd.DataFrame()
+		self.norm_regions_df_ita = pd.DataFrame()
+		self.norm_regions_df = pd.DataFrame()
 
 	def normalise(self):
 
-		self.raw_cases_country_df["data"] = pd.to_datetime(self.raw_cases_country_df["data"], utc=True)
 		self.norm_country_df_ita = self.raw_cases_country_df.copy()
-		self.norm_country_df_ita = add_missing_features_ita(self.norm_country_df_ita.fillna(0))
 		self.norm_country_df = translate_columns_ita_to_eng(self.norm_country_df_ita)
 		self.norm_country_df = add_missing_features_eng(self.norm_country_df)
+		self.norm_country_df_ita = self.raw_cases_country_df.copy()
+		self.norm_country_df_ita = add_missing_features_ita(self.norm_country_df_ita.fillna(0))
+		self.norm_country_df_ita = rename_columns_ita(self.norm_country_df_ita)
 
-		self.raw_cases_regions_df["data"] = pd.to_datetime(self.raw_cases_regions_df["data"])
+		self.norm_regions_df_ita = self.raw_cases_regions_df.copy()
+		self.norm_regions_df = translate_columns_ita_to_eng(self.norm_regions_df_ita)
+		print(self.norm_regions_df.columns)
+		for region, df_region in self.norm_regions_df.groupby("region_id"):
+			df_region = add_missing_features_eng(
+				df_region.fillna(0)
+			)
+			for col in df_region:
+				self.norm_regions_df.loc[df_region.index, col] = df_region[col].copy()
 		self.norm_regions_df_ita = self.raw_cases_regions_df.copy()
 		for region, df_region in self.norm_regions_df_ita.groupby("codice_regione"):
 			df_region = add_missing_features_ita(
 				df_region.fillna(0)
 			)
+			df_region = rename_columns_ita(df_region)
 			for col in df_region:
 				self.norm_regions_df_ita.loc[df_region.index, col] = df_region[col].copy()
-
-		self.norm_regions_df = translate_columns_ita_to_eng(self.norm_country_df_ita)
 
 	def save_norm(self):
 
