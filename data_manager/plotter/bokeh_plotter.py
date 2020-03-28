@@ -1,7 +1,10 @@
 import os
 import warnings
 warnings.filterwarnings("ignore")
+
+from bokeh.models import HoverTool
 from bokeh.plotting import figure, save, output_file
+
 import pandas_bokeh
 import pandas as pd
 pd.set_option('plotting.backend', 'pandas_bokeh')
@@ -11,16 +14,14 @@ def plot_line_bokeh (df):
 
     warnings.filterwarnings("ignore")
 
-    p = figure(x_axis_type="datetime")
-    p.legend.click_policy="hide"
-    p = df.plot_bokeh(
-        kind="line",
+    p = df.plot.line(
         marker="o",
         plot_data_points=True,
-        panning=False,
+        panning=True,
         figsize=(900, 450),
         legend="top_left",
-        show_figure=False
+        show_figure=False,
+        rangetool=True,
     )
 
     return p
@@ -36,33 +37,32 @@ def plot_lines_dashboard_ita(cases_df, figures_path, filename):
     pandas_bokeh.output_file(outfp)
 
     p1 = plot_line_bokeh(
-        cases_df.set_index("data")[[
-            col for col in cases_df.set_index("data")
+        cases_df[[
+            col for col in cases_df
             if not col.startswith("nuovi")
             and not col.startswith("tasso")
             and not col.startswith("totale")
-            and col != "tamponi"
+            and col not in ["tamponi", "lat", "lon", "codice_regione", "stato"]
         ]],
     )
 
     p2 = plot_line_bokeh(
-        cases_df.set_index("data")[[
-            col for col in cases_df.set_index("data")
+        cases_df[[
+            col for col in cases_df
             if col.startswith("totale")
         ]],
     )
 
     p3 = plot_line_bokeh(
-        cases_df.set_index("data")[[
-            col for col in cases_df.set_index("data")
+        cases_df[[
+            col for col in cases_df
             if col.startswith("nuovi")
         ]],
     )
 
-
     p4 = plot_line_bokeh(
-        cases_df.set_index("data")[[
-            col for col in cases_df.set_index("data")
+        cases_df[[
+            col for col in cases_df
             if col.startswith("tasso")
         ]],
     )

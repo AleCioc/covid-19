@@ -82,7 +82,7 @@ class ItalyCasesDataSource:
 
 	def normalise(self):
 
-		self.raw_cases_country_df["data"] = pd.to_datetime(self.raw_cases_country_df["data"])
+		self.raw_cases_country_df["data"] = pd.to_datetime(self.raw_cases_country_df["data"], utc=True)
 		self.norm_country_df_ita = self.raw_cases_country_df.copy()
 		self.norm_country_df_ita = add_missing_features_ita(self.norm_country_df_ita.fillna(0))
 		self.norm_country_df = translate_columns_ita_to_eng(self.norm_country_df_ita)
@@ -95,9 +95,7 @@ class ItalyCasesDataSource:
 				df_region.fillna(0)
 			)
 			for col in df_region:
-				self.norm_regions_df_ita[col] = df_region[col].copy()
-
-		print(self.norm_regions_df_ita.columns)
+				self.norm_regions_df_ita.loc[df_region.index, col] = df_region[col].copy()
 
 		self.norm_regions_df = translate_columns_ita_to_eng(self.norm_country_df_ita)
 
