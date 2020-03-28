@@ -24,11 +24,8 @@ from jinja2 import Template
 
 app = Flask(__name__)
 
-
 colormap = {'setosa': 'red', 'versicolor': 'green', 'virginica': 'blue'}
 colors = [colormap[x] for x in flowers['species']]
-
-
 
 
 @app.route("/")
@@ -42,15 +39,29 @@ def dash(country, region, type):
     with open('static\\' + country + '\\' + region + '\\' + type + '.json') as json_file:
         return json.load(json_file)
 
-
-
-
-
-
+@app.route('/dash_options')
+def dash_options():
+    with open("static\\options.json") as file:
+        return json.load(file)
 
 
 class Bk_worker(Thread):
     def run(self):
+        def dash_options(path):
+            data = {}
+            walk = os.walk(path)
+            root, states, files = walk.__next__()
+            for state in states:
+                root, regions, files = walk.__next__()
+                data[state] = {}
+                for region in regions:
+                    data[state][region] = []
+                    root, dirs, files = walk.__next__()
+                    for file in files:
+                        if os.path.splitext(file)[1] == '.json':
+                            data[state][region].append(os.path.splitext(file)[0])
+            return data
+
         while True:
             italy_cases_ds = ItalyCasesDataSource()
             italy_cases_ds.normalise()
@@ -76,9 +87,13 @@ class Bk_worker(Thread):
                 )
                 os.makedirs(region_path, exist_ok=True)
                 plot_lines_dashboard_ita(df_region, region_path)
+            json.dump(dash_options("static"), open("static\\options.json", "w"))
             sleep(1000)
 
 
+
+
 if __name__ == '__main__':
-    # Bk_worker().start()
-    app.run()
+    #Bk_worker().start()
+
+    app.run(host='0.0.0.0')

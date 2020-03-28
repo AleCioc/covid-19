@@ -7,18 +7,32 @@
 
     {{ resources }}
     <title>Dashbord covid</title>
-
     <script>
-        function select() {
-            var e
-            e =document.getElementById("country");
+        var dash_options;
+
+        function get_options() {
+            $.getJSON('dash_options', function (d) {
+                dash_options = d;
+                for (let state in dash_options) {
+                    let x = document.getElementById("country");
+                    let option = document.createElement("option");
+                    option.text = state;
+                    option.value = state;
+                    x.add(option);
+                }
+            });
+        }
+    </script>
+    <script>
+        function select_type() {
+            var e;
+            e = document.getElementById("country");
             var country = e.options[e.selectedIndex].value;
             e = document.getElementById("region");
             var region = e.options[e.selectedIndex].value;
             e = document.getElementById("type");
             var type = e.options[e.selectedIndex].value;
-            if (country !== ""  && region!=="" && type !== "")
-            {
+            if (country !== "" && region !== "" && type !== "") {
                 document.getElementById("myplot").innerHTML = "";
                 fetch('/' + country + '/' + region + '/' + type)
                     .then(function (response) {
@@ -29,27 +43,53 @@
                     })
             }
         }
+
+        function select_state() {
+
+            document.getElementById("region").innerHTML="";
+            let e = document.getElementById("country");
+            let country = e.options[e.selectedIndex].value;
+            for (let state in dash_options[country]) {
+                let x = document.getElementById("region");
+                let option = document.createElement("option");
+                option.text = state;
+                option.value = state;
+                x.add(option);
+            }
+        }
+
+        function select_region() {
+            document.getElementById("type").innerHTML="";
+            let e = document.getElementById("country");
+            let country = e.options[e.selectedIndex].value;
+            e = document.getElementById("region");
+            let region = e.options[e.selectedIndex].value;
+            for (let state in dash_options[country][region]) {
+                let x = document.getElementById("type");
+                let option = document.createElement("option");
+                option.text = dash_options[country][region][state];
+                option.value = dash_options[country][region][state];
+                x.add(option);
+            }
+        }
     </script>
 
 </head>
 
-<label for="country"></label><select id="country" onchange="select()">
-    <option value="">country</option>
-    <option value="italy">italy</option>
+
+<body onload="get_options()">
+<label for="country"></label><select id="country" onchange="select_state()">
+    <option value="">select country</option>
 </select>
 
-<label for="region"></label><select id="region" onchange="select()">
-    <option value="">region</option>
-    <option value="abruzzo">abruzzo</option>
+<label for="region"></label><select id="region" onchange="select_region()">
+
 </select>
 
-<label for="type"></label><select id="type" onchange="select()">
-    <option value="">graf</option>
-    <option value="nuovi">nuovi</option>
-    <option value="tasso">tasso</option>
+<label for="type"></label><select id="type" onchange="select_type()">
+
 </select>
 
-<body>
 <div id="myplot"></div>
 
 <script>
