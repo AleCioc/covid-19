@@ -3,8 +3,8 @@ import warnings
 warnings.filterwarnings("ignore")
 import pandas as pd
 
-from data_manager.config.config import raw_cases_paths_dict
-from data_manager.config.config import norm_cases_paths
+from data_manager.config.config import *
+from data_manager.plotter.bokeh_plotter import *
 
 
 def read_raw_data():
@@ -39,6 +39,7 @@ def read_raw_data():
 		raw_world_df = pd.DataFrame()
 		datetime_index = df.iloc[:, 4:].T.index
 		datetime_series = pd.Series(datetime_index.values)
+		df["Province/State"] = df["Province/State"].fillna("mainland")
 		for country, country_df in df.groupby("Country/Region"):
 			country_categorial_cols = country_df.iloc[:, :4].columns
 			country_time_series = country_df.iloc[:, 4:].T.iloc[:, :1]
@@ -46,28 +47,20 @@ def read_raw_data():
 			country_time_series["Date"] = country_time_series.index
 			country_time_series["Country/Region"] = country
 			#print(country_time_series)
-			if len(country_df["Province/State"].unique()) == 1:
+
+			for region, region_df in country_df.groupby("Province/State"):
+				country_categorial_cols = country_df.iloc[:, :4].columns
+				region_time_series = region_df.iloc[:, 4:].T.iloc[:, :1]
+				region_time_series[col_name] = region_time_series.iloc[:, 0]
+				region_time_series["Date"] = region_time_series.index
+				region_time_series["Province/State"] = region
 				for col in country_categorial_cols:
-					country_time_series[col] = country_df[col].unique()[0]
-				#print(country_time_series)
+					region_time_series[col] = region_df[col].unique()[0]
+				#print(region_time_series)
 				raw_world_df = pd.concat([
 					raw_world_df,
-					country_time_series.iloc[:, 1:]
+					region_time_series.iloc[:, 1:]
 				], axis=0, ignore_index=True)
-			else:
-				for region, region_df in df.groupby("Province/State"):
-					country_categorial_cols = country_df.iloc[:, :4].columns
-					region_time_series = region_df.iloc[:, 4:].T.iloc[:, :1]
-					region_time_series[col_name] = region_time_series.iloc[:, 0]
-					region_time_series["Date"] = region_time_series.index
-					region_time_series["Province/State"] = region
-					for col in country_categorial_cols:
-						region_time_series[col] = region_df[col].unique()[0]
-					#print(region_time_series)
-					raw_world_df = pd.concat([
-						raw_world_df,
-						region_time_series.iloc[:, 1:]
-					], axis=0, ignore_index=True)
 
 			#print(raw_world_df)
 
@@ -131,19 +124,32 @@ class WorldCasesDataSource:
 		#print(self.norm_world_df.datetime.min(), self.norm_world_df.datetime.max())
 		#print(self.norm_world_df.region_id.isnull())
 
-		self.countries_with_regions = self.norm_world_df[~self.norm_world_df.region_id.isnull()].country_id.unique()
-		self.countries_without_regions = self.norm_world_df[self.norm_world_df.region_id.isnull()].country_id.unique()
-
 		for country, country_df in self.norm_world_df.groupby("country_id"):
-			if country in self.countries_without_regions:
-				country_df = rename_columns(country_df).drop("region_id", axis=1).fillna(0.0)
-				country_df = add_missing_features_eng(country_df)
-				self.countries_df_dict[country] = country_df
+			regions_df = country_df.copy()
+			country_df = country_df.loc[country_df.region_id == "mainland"].fillna(0.0)
+			country_df = add_missing_features_eng(country_df)
+			self.countries_df_dict[country] = country_df
+			self.countries_with_regions_df_dict[country] = {}
+			for region, region_df in regions_df.groupby("region_id"):
+				region_df = region_df.fillna(0.0)
+				region_df = add_missing_features_eng(region_df)
+				self.countries_with_regions_df_dict[country][region] = region_df.set_index("datetime")
 
-			elif country in self.countries_with_regions:
-				self.countries_with_regions_df_dict[country] = {}
-				for region, region_df in country_df.groupby("region_id"):
-					self.countries_with_regions_df_dict[country][region] = region_df
+	def plot_country_dashboard(self, country):
+		country_path = os.path.join(
+			world_figures_path,
+			"countries",
+			country
+		)
+		for region in self.countries_with_regions_df_dict[country]:
+			df_region = self.countries_with_regions_df_dict[country][region]
+			region_path = os.path.join(
+				country_path,
+				"regions",
+				region
+			)
+			os.makedirs(region_path, exist_ok=True)
+			plot_lines_dashboard(df_region, region_path, region, True)
 
 	def save_norm(self):
 

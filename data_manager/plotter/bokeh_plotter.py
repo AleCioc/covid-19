@@ -69,45 +69,49 @@ def plot_line_bokeh (df, figures_path, filename, save_flag=False):
 
 def plot_lines_dashboard(cases_df, figures_path, geo_name, plot_dashboard_flag):
 
-    for save_flag in [True, False]:
-
-        p1 = plot_line_bokeh(
-            cases_df[[
-                "total_cases",
-            ]], figures_path, "cases", save_flag
-        )
-
-        p2 = plot_line_bokeh(
-            cases_df[[
-                "new_currently_positives",
-                "total_deaths",
-                "total_recovered"
-            ]], figures_path, "main_status", save_flag
-        )
-
-        p3 = plot_line_bokeh(
-            cases_df[[
-                "new_positives",
-                #"new_currently_positives",
-                "new_deaths",
-                #"new_recovered"
-            ]], figures_path, "main_status", save_flag
-        )
-        p4 = plot_line_bokeh(
-            cases_df[[
-                "rate_new_positives",
-                "rate_deaths",
-                "rate_recovered"
-            ]], figures_path, "main_status", save_flag
-        )
-
     if plot_dashboard_flag:
+
+        save_flag = False
+
         outfp = os.path.join(
             figures_path,
             geo_name + ".html"
         )
         output_file(outfp)
         pandas_bokeh.output_file(outfp)
+    else:
+        save_flag = True
+
+    p1 = plot_line_bokeh(
+        cases_df[[
+            "total_cases",
+        ]], figures_path, "cases", save_flag
+    )
+
+    p2 = plot_line_bokeh(
+        cases_df[[
+            "total_deaths",
+            "total_recovered"
+        ]], figures_path, "main_status", save_flag
+    )
+
+    p3 = plot_line_bokeh(
+        cases_df[[
+            "new_positives",
+            "new_currently_positives",
+            "new_deaths",
+            "new_recovered"
+        ]], figures_path, "main_status", save_flag
+    )
+    p4 = plot_line_bokeh(
+        cases_df[[
+            "rate_new_positives",
+            "rate_deaths",
+            "rate_recovered"
+        ]], figures_path, "main_status", save_flag
+    )
+
+    if plot_dashboard_flag:
 
         plot_grid = pandas_bokeh.plot_grid([
             [p1, p2],
@@ -119,7 +123,7 @@ def plot_lines_dashboard(cases_df, figures_path, geo_name, plot_dashboard_flag):
 
 def plot_lines_dashboard_ita(cases_df, figures_path, geo_name, plot_dashboard_flag):
 
-    for save_flag in [True, False]:
+    for save_flag in [False]:
 
         p1 = plot_line_bokeh(
             cases_df[[

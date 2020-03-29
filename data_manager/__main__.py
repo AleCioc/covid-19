@@ -33,23 +33,10 @@ from data_manager.plotter.bokeh_plotter import *
 
 from data_manager.cases_data_source.world_cases_data_source import WorldCasesDataSource
 world_cases_ds = WorldCasesDataSource()
+#world_cases_ds.normalise()
+#world_cases_ds.save_norm()
+world_cases_ds.load_norm()
 world_cases_ds.normalise()
-world_cases_ds.save_norm()
-#world_cases_ds.load_norm()
-
-for country in list(world_cases_ds.countries_df_dict.keys())[:1]:
-    df_country = world_cases_ds.countries_df_dict[country]
-    print(df_country)
-    country_path = os.path.join(
-        world_figures_path,
-        "countries",
-        country
-    )
-    os.makedirs(country_path, exist_ok=True)
-    plot_lines_dashboard(
-        df_country.set_index("datetime"),
-        country_path,
-        "country",
-        True
-    )
-    break
+world_cases_ds.plot_country_dashboard("Armenia")
+world_cases_ds.plot_country_dashboard("France")
+world_cases_ds.plot_country_dashboard("Italy")
