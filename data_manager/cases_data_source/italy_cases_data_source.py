@@ -6,7 +6,7 @@ import pandas as pd
 from data_manager.config.config import raw_cases_paths_dict
 from data_manager.config.config import norm_cases_paths
 
-[
+cols = [
 	'data',
 	'stato',
 	'codice_regione',
@@ -31,7 +31,7 @@ def rename_columns_ita(ita_df):
 	return ita_df.rename({
 		"ricoverati_con_sintomi": "attualmente_ricoverati",
 		"terapia_intensiva": "attualmente_terapia_intensiva",
-		"totale_ospedalizzati": "totale_ospedalizzati",
+		"totale_ospedalizzati": "attualmente_ospedalizzati",
 		"isolamento_domiciliare": "attualmente_isolamento_domiciliare",
 		"dimessi_guariti": "totale_dimessi_guariti",
 		"deceduti": "totale_deceduti",
@@ -62,10 +62,10 @@ def add_missing_features_ita(cases_df_ita):
 	cases_df_ita["nuovi_deceduti"] = cases_df_ita.deceduti.diff()
 	cases_df_ita["nuovi_dimessi_guariti"] = cases_df_ita.dimessi_guariti.diff()
 	cases_df_ita["nuovi_positivi_conclusi"] = cases_df_ita.nuovi_deceduti + cases_df_ita.nuovi_dimessi_guariti
-	cases_df_ita["nuovi_positivi_totali"] = cases_df_ita.nuovi_attualmente_positivi + cases_df_ita.nuovi_positivi_conclusi
+	cases_df_ita["nuovi_positivi"] = cases_df_ita.nuovi_attualmente_positivi + cases_df_ita.nuovi_positivi_conclusi
 
-	cases_df_ita["tasso_tamponi_positivi"] = cases_df_ita['totale_casi'] / cases_df_ita['tamponi']
-	cases_df_ita["tasso_nuovi_positivi"] = cases_df_ita['nuovi_positivi_totali'] / cases_df_ita['totale_casi']
+	cases_df_ita["tasso_positivi_tamponi"] = cases_df_ita['totale_casi'] / cases_df_ita['tamponi']
+	cases_df_ita["tasso_nuovi_positivi"] = cases_df_ita['nuovi_positivi'] / cases_df_ita['totale_casi']
 	cases_df_ita["tasso_mortalita"] = cases_df_ita['deceduti'] / cases_df_ita['totale_casi']
 	cases_df_ita["tasso_guarigione"] = cases_df_ita['dimessi_guariti'] / cases_df_ita['totale_casi']
 

@@ -14,20 +14,20 @@ italy_cases_ds.normalise()
 
 country_df = italy_cases_ds.norm_country_df_ita.set_index("data")
 regions_df = italy_cases_ds.norm_regions_df_ita.set_index("data")
-country_df["datetime"] = country_df.index.values
-country_df["data"] = country_df["datetime"].apply(lambda d: str(d.date()))
 
 country_path = os.path.join(
     italy_figures_path,
     "country"
 )
 os.makedirs(country_path, exist_ok=True)
-plot_lines_dashboard_ita(country_df, country_path)
+plot_lines_dashboard_ita(country_df, country_path, "country")
 for region, df_region in regions_df.groupby("denominazione_regione"):
+    break
     print(region)
     region_path = os.path.join(
         italy_figures_path,
         region
     )
     os.makedirs(region_path, exist_ok=True)
-    plot_lines_dashboard_ita(df_region, region_path)
+    plot_lines_dashboard_ita(df_region, region_path, region)
+
