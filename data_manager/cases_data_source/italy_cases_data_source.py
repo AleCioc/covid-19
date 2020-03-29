@@ -53,6 +53,7 @@ def translate_columns_ita_to_eng(ita_df):
 		"dimessi_guariti": "total_recovered",
 		"deceduti": "total_deaths",
 		"tamponi": "total_tests",
+		"totale_casi": "total_cases",
 	}, axis=1)
 
 
@@ -81,7 +82,7 @@ def add_missing_features_eng(cases_df):
 	cases_df["new_deaths"] = cases_df.total_deaths.diff()
 	cases_df["new_recovered"] = cases_df.total_recovered.diff()
 	cases_df["new_concluded_cases"] = cases_df.new_deaths + cases_df.new_recovered
-	cases_df["new_total_positives"] = cases_df.new_currently_positives + cases_df.new_concluded_cases
+	cases_df["new_positives"] = cases_df.new_currently_positives + cases_df.new_concluded_cases
 	return cases_df
 
 

@@ -27,8 +27,8 @@ def plot_line_bokeh (df, figures_path, filename, save_flag=False):
 
     warnings.filterwarnings("ignore")
 
-    df["data_string"] = df.index.values
-    df.data_string = df.data_string.apply(lambda d: str(d.date()))
+    df["t"] = df.index.values
+    df.t = df.t.apply(lambda d: str(d.date()))
     p = df.plot.line(
         marker="o",
         plot_data_points=True,
@@ -38,7 +38,7 @@ def plot_line_bokeh (df, figures_path, filename, save_flag=False):
         show_figure=False,
         rangetool=False,
         hovertool_string="""
-            data: @data_string <br/>
+            t: @t <br/>
         """
     )
 
@@ -47,7 +47,7 @@ def plot_line_bokeh (df, figures_path, filename, save_flag=False):
     for hover in hovers:
         hover.tooltips = []
         if flag_first:
-            for y_col in ["data_string"] + columns_names:
+            for y_col in ["t"] + columns_names:
                 hover.tooltips += [
                     (y_col, '@{' + y_col + '}'),
                 ]
@@ -67,7 +67,57 @@ def plot_line_bokeh (df, figures_path, filename, save_flag=False):
     return p
 
 
-def plot_lines_dashboard_ita(cases_df, figures_path, geo_name):
+def plot_lines_dashboard(cases_df, figures_path, geo_name, plot_dashboard_flag):
+
+    for save_flag in [True, False]:
+
+        p1 = plot_line_bokeh(
+            cases_df[[
+                "total_cases",
+            ]], figures_path, "cases", save_flag
+        )
+
+        p2 = plot_line_bokeh(
+            cases_df[[
+                "new_currently_positives",
+                "total_deaths",
+                "total_recovered"
+            ]], figures_path, "main_status", save_flag
+        )
+
+        p3 = plot_line_bokeh(
+            cases_df[[
+                "new_positives",
+                #"new_currently_positives",
+                "new_deaths",
+                #"new_recovered"
+            ]], figures_path, "main_status", save_flag
+        )
+        p4 = plot_line_bokeh(
+            cases_df[[
+                "rate_new_positives",
+                "rate_deaths",
+                "rate_recovered"
+            ]], figures_path, "main_status", save_flag
+        )
+
+    if plot_dashboard_flag:
+        outfp = os.path.join(
+            figures_path,
+            geo_name + ".html"
+        )
+        output_file(outfp)
+        pandas_bokeh.output_file(outfp)
+
+        plot_grid = pandas_bokeh.plot_grid([
+            [p1, p2],
+            [p3, p4],
+        ], toolbar_location="left")
+
+        pandas_bokeh.save(plot_grid)
+
+
+def plot_lines_dashboard_ita(cases_df, figures_path, geo_name, plot_dashboard_flag):
 
     for save_flag in [True, False]:
 
@@ -120,17 +170,18 @@ def plot_lines_dashboard_ita(cases_df, figures_path, geo_name):
             ]], figures_path, "tassi_condizioni_cliniche", save_flag
         )
 
-    outfp = os.path.join(
-        figures_path,
-        geo_name + ".html"
-    )
-    output_file(outfp)
-    pandas_bokeh.output_file(outfp)
+    if plot_dashboard_flag:
+        outfp = os.path.join(
+            figures_path,
+            geo_name + ".html"
+        )
+        output_file(outfp)
+        pandas_bokeh.output_file(outfp)
 
-    plot_grid = pandas_bokeh.plot_grid([
-        [p1, p2],
-        [p3, p4],
-        [p5, p6],
-    ], toolbar_location="left")
+        plot_grid = pandas_bokeh.plot_grid([
+            [p1, p2],
+            [p3, p4],
+            [p5, p6],
+        ], toolbar_location="left")
 
-    pandas_bokeh.save(plot_grid)
+        pandas_bokeh.save(plot_grid)

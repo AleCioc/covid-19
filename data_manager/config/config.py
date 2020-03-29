@@ -10,6 +10,11 @@ raw_cases_paths_dict = {
 		"raw", "cases", "italy",
 		"COVID-19"
 	),
+	"world": os.path.join(
+		root_data_path,
+		"raw", "cases", "world",
+		"COVID-19"
+	)
 }
 
 norm_cases_paths = os.path.join(
@@ -27,3 +32,9 @@ italy_figures_path = os.path.join(
 	"italy"
 )
 os.makedirs(italy_figures_path, exist_ok=True)
+
+world_figures_path = os.path.join(
+	root_figures_path,
+	"world"
+)
+os.makedirs(world_figures_path, exist_ok=True)
