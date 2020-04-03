@@ -1,16 +1,16 @@
 {
-	"freq": ["30Min"],
-	"aggfunc_id": ["mean"],
+	"training_policy": "sliding",
+	"training_size": 147,
+	"training_update_t": 1,
 
-	"start": [1],
-	"depth": [1, 2],
+	"start": 1,
+	"depth": 7,
 
-	"y_col": ["h_ltp"],
+	"y_col": "total_cases",
 
-    "scaler_type": ["std", "minmax"],
-	"regr_type": ["ridge"],
-	"dim_red_type": ["crosscorr"],
-	"dim_red_param": [10, 20],
-	"hyperparams_tuning": [0]
+    "scaler_type": "std",
+	"regr_type": "ridge",
+	"dim_red_type": "model",
+	"dim_red_param": 5,
+	"hyperparams_tuning": 0
 }
-

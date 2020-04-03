@@ -1,14 +1,13 @@
 import pandas as pd
 
-from bf_prelive_predictor.predictor.errors import *
-from bf_prelive_predictor.utils.legend import *
+from predictor.errors import *
+from utils.legend import *
 
 
-class SingleMatchPredictor:
+class SingleCountryPredictor:
 
 	def __init__(
 			self,
-			match_id,
 			X_test,
 			y_test,
 			train_config,
@@ -16,7 +15,6 @@ class SingleMatchPredictor:
 
 	):
 
-		self.match_id = match_id
 		self.config = train_config
 		self.trainer = trainer
 		self.X_test = X_test.astype(float).dropna()

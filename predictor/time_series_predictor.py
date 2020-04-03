@@ -1,7 +1,7 @@
 import pandas as pd
 
-from bf_prelive_predictor.predictor.errors import *
-from bf_prelive_predictor.utils.legend import *
+from predictor.errors import *
+from utils.legend import *
 
 
 class TimeSeriesPredictor:

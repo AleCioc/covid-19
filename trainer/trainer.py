@@ -4,6 +4,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
+
 from sklearn.pipeline import Pipeline
 
 from sklearn.linear_model import LinearRegression
@@ -24,11 +25,10 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import make_scorer
 
-from bf_prelive_predictor.config.config import trainer_pickles_path
-from bf_prelive_predictor.trainer.hyperparams_grids import hyperparams_grids
-from bf_prelive_predictor.trainer.best_hyperparams import best_hyperparams
+from trainer.hyperparams_grids import hyperparams_grids
+from trainer.best_hyperparams import best_hyperparams
 
-from bf_prelive_predictor.utils.legend import *
+from utils.legend import *
 
 
 def crosscorr (X, y):
@@ -237,14 +237,3 @@ class TimeSeriesTrainer:
 		self.get_dim_red_results()
 		self.final_model = self.final_estimator.fit(self.X.loc[:, self.chosen_features], self.y)
 		self.get_regression_coefs()
-
-	def save_final_estimator (self):
-		model_conf_string = "_".join([str(v) for v in self.config.values()])
-		out_pickle_filename = os.path.join(
-			trainer_pickles_path,
-			model_conf_string
-		)
-		joblib.dump(
-			self.final_model,
-			filename=out_pickle_filename
-		)
