@@ -1,0 +1,16 @@
+{
+	"freq": "60Min",
+	"aggfunc_id": "mean",
+
+	"start": 1,
+	"depth": 1,
+
+	"y_col": "h_ltp",
+
+    "scaler_type": "minmax",
+	"regr_type": "lr",
+	"dim_red_type": "",
+	"dim_red_param": 10,
+	"hyperparams_tuning": 0
+}
+

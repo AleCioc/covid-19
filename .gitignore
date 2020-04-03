@@ -2,6 +2,7 @@ venv*/
 
 data_manager/data/*
 data_manager/figures/*
+validation_results/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
