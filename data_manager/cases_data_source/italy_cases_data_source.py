@@ -116,7 +116,7 @@ class ItalyCasesDataSource:
 				"dati-andamento-nazionale",
 				"dpc-covid19-ita-andamento-nazionale.csv"
 			)
-		).drop(["note_it", "note_en"], axis=1).dropna()
+		).dropna(how="all", axis=1)
 
 		self.norm_data_path = os.path.join(
 			norm_cases_paths,
@@ -130,7 +130,7 @@ class ItalyCasesDataSource:
 				"dati-regioni",
 				"dpc-covid19-ita-regioni.csv"
 			)
-		).drop(["note_it", "note_en"], axis=1).dropna()
+		).dropna(how="all", axis=1)
 
 		self.raw_cases_country_df["data"] = pd.to_datetime(self.raw_cases_country_df["data"], utc=True)
 		self.raw_cases_regions_df["data"] = pd.to_datetime(self.raw_cases_regions_df["data"], utc=True)
@@ -178,7 +178,7 @@ class ItalyCasesDataSource:
 			self.norm_country_df_ita,
 			self.norm_regions_df_ita
 		)
-		plotter.plot_dashboard_ita(True, True)
+		plotter.plot_dashboard_ita(True, False)
 
 	def save_norm(self):
 

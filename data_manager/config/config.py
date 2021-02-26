@@ -16,6 +16,8 @@ raw_cases_paths_dict = {
 		"COVID-19"
 	)
 }
+os.makedirs(raw_cases_paths_dict['italy'], exist_ok=True)
+os.makedirs(raw_cases_paths_dict['world'], exist_ok=True)
 
 norm_cases_paths = os.path.join(
 	root_data_path,
