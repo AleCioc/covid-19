@@ -3,9 +3,9 @@ import warnings
 warnings.filterwarnings("ignore")
 import pandas as pd
 
-from data_manager.config.config import *
-from data_manager.plotter.bokeh_plotter import *
-from data_manager.plotter.cases_plotter import ItalyCasesPlotter
+from covid_19.data_manager.config.config import *
+from covid_19.data_manager.plotter.bokeh_plotter import *
+from covid_19.data_manager.plotter.cases_plotter import ItalyCasesPlotter
 
 cols = [
 	'data',

@@ -1,12 +1,10 @@
-import os
+from covid_19.config.config import *
 
-from config.config import *
+from covid_19.data_manager.cases_data_source.italy_cases_data_source import ItalyCasesDataSource
 
-from data_manager.cases_data_source.italy_cases_data_source import ItalyCasesDataSource
+from covid_19.data_manager.config.config import *
 
-from data_manager.config.config import *
-
-from data_manager.plotter.bokeh_plotter import *
+from covid_19.data_manager.plotter.bokeh_plotter import *
 
 italy_cases_ds = ItalyCasesDataSource()
 italy_cases_ds.normalise()

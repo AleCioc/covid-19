@@ -1,5 +1,5 @@
-from data_manager.plotter.bokeh_plotter import *
-from data_manager.config.config import *
+from covid_19.data_manager.plotter.bokeh_plotter import *
+from covid_19.data_manager.config.config import *
 
 
 class ItalyCasesPlotter:

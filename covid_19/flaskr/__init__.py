@@ -1,9 +1,7 @@
-import os
-
 from threading import Thread
 from time import sleep
 
-from flask import Flask, render_template
+from flask import Flask
 
 from data_manager import root_figures_path
 from data_manager.cases_data_source.italy_cases_data_source import ItalyCasesDataSource

@@ -1,9 +1,9 @@
 import git
 
-from data_manager.config.config import *
+from covid_19.data_manager.config.config import *
 
 
-rawdatapath = os.path.join(os.getcwd(), "data_manager", "data", "raw", "cases", "italy")
+rawdatapath = os.path.join(os.getcwd(), "covid_19", "data_manager", "data", "raw", "cases", "italy")
 
 
 directory = os.listdir(rawdatapath)

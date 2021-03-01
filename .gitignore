@@ -1,7 +1,7 @@
 venv*/
 
-data_manager/data/*
-data_manager/figures/*
+covid_19/data_manager/data/*
+covid_19/data_manager/figures/*
 validation_results/*
 
 # Byte-compiled / optimized / DLL files
