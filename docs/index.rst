@@ -18,73 +18,38 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
 
 
-First section: Output
+Output
 =====================
-In this graph we can see
+The dashboard shows six graphs regarding the COVID-19 situation. Below is a brief summary of what is reported. (The graphs are numbered from left to right, top to bottom)
 
-- new cases (blue)
-- new deaths (green)
 
+#. It represents the number of swabs carried out and how many of these were positive.
+#. Shows the cumulative situation of currently positive, deceased and discharged healed.
+#. It represents the daily changes of **graph 2**
+#. The graph plots the rate of new positive swabs, new positives, mortality and recovery rates
+#. It shows the daily breakdown between patients in home isolation, hospitalized and in intensive care.
+#. Show the data rate in **graph 5**
+
+As an example, we report a graph (dated March 4, 2021) of **type 3**.
 
 .. image:: graficodata.png
    :align: center
    :alt: covid-19 first graph
 
-Data are taken from `Protezione Civile <http://www.protezionecivile.gov.it/>`_
+.. note::  Data are taken automatically from `Protezione Civile <http://www.protezionecivile.gov.it/>`_
 
-For this we added these libraries::
-
-    import math
-    import os
-    # code
-
-
-
-Second section: Prova
-=====================
-
-First subsection: Prova1
-------------------------
-
-Questo è un testo di prova per vedere se a sinistra appare nel menu
-
-Second subsection: Prova Table
--------------------------------
-
-This is a table
-
-+-----------------+------------+-----------+
-| Prima Colonna   | Seconda    | Terza     |
-+=================+============+===========+
-| Le tabelle      | fanno      | schifo    |
-+-----------------+------------+-----------+
-| Stiamone        | Alla larga per favore  |
-+-----------------+------------+-----------+
-
-Third subsection: Stop please
------------------------------
-
-Nested subsubsection
-^^^^^^^^^^^^^^^^^^^^
-
-Last section: Cose varie
-========================
-.. seealso:: This is a simple **seealso** note.
-.. warning:: note the space between the directive and the text
-
-
-Prova video
+Video tutorial
 ===========
+
+The graphs, made with Bokeh, have various features shown in the video below.
 
 .. raw:: html
 
    <div style="text-align: center;">
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/9sFzTPhMeQg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/MapQ0BZF-RU" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
    <div style="text-align: left;"></>
 
 
-.. note::  This is a **videotutorial**.
 
