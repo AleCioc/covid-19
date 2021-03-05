@@ -17,5 +17,5 @@ if not os.path.exists(rawdatapath) or len(directory) == 0:
 g = git.cmd.Git(raw_cases_paths_dict["italy"])
 g.pull()
 
-g = git.cmd.Git(raw_cases_paths_dict["world"])
-g.pull()
+#g = git.cmd.Git(raw_cases_paths_dict["world"])
+#g.pull()

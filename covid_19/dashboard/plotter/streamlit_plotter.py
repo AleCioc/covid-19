@@ -1,10 +1,13 @@
 
 import pandas as pd
 import streamlit as st
+
+from covid_19.data_manager.plotter.bokeh_plotter import plot_df_lines_bokeh, get_bokeh_plotter
+
 graph_types = [ "tamponi", "totali_principali", "nuovi_principali", "tassi_principali", "dettaglio_pazienti_attuali", "tassi_condizioni_cliniche"]
 
 
-def plot_lines_dashboard_ita_st(cases_df, type):
+def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard_flag, type, show_also_bokeh=False):
 
     if type not in graph_types:
         return
@@ -49,5 +52,7 @@ def plot_lines_dashboard_ita_st(cases_df, type):
 
     dataplot.set_index(cases_df["data"], inplace=True)
     st.line_chart(dataplot)
+    if show_also_bokeh:
+        st.bokeh_chart(get_bokeh_plotter(cases_df, figures_path, geo_name, plot_dashboard_flag, type))
     expander = st.beta_expander("Mostra Dati")
     expander.write(dataplot)

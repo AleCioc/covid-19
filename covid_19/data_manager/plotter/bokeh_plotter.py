@@ -10,8 +10,10 @@ from bokeh.models import ColumnDataSource, HoverTool, Line, Plot, Grid, LinearAx
 from bokeh.plotting import curdoc, figure, save, show, output_file
 from bokeh.embed import json_item
 from bokeh.palettes import Dark2_5
-
 import pandas_bokeh
+
+graph_types = [ "tamponi", "totali_principali", "nuovi_principali", "tassi_principali", "dettaglio_pazienti_attuali", "tassi_condizioni_cliniche"]
+
 
 pd.set_option('plotting.backend', 'pandas_bokeh')
 
@@ -257,8 +259,6 @@ def plot_lines_dashboard_ita(cases_df, figures_path, geo_name, plot_dashboard_fl
         save(plot_grid)
 
 
-
-
 def plot_regions_comparison(regions_df, y_col, x_col):
     df_regions_plot = pd.DataFrame(
         index=regions_df[x_col].unique()
@@ -306,3 +306,64 @@ def plot_regions_comparison(regions_df, y_col, x_col):
 
     curdoc().add_root(plot)
     show(plot)
+
+
+def get_bokeh_plotter(cases_df, figures_path, geo_name, plot_dashboard_flag, type):
+    for save_flag in [False]:
+
+        if type == graph_types[0]:
+            p1 = plot_df_lines_bokeh(
+                cases_df, "data", [
+                    "totale_tamponi",
+                    "totale_casi",
+                ], figures_path, "tamponi", save_flag
+            )
+            return p1
+        elif type == graph_types[1]:
+            p2 = plot_df_lines_bokeh(
+                cases_df, "data", [
+                    "totale_attualmente_positivi",
+                    "totale_deceduti",
+                    "totale_dimessi_guariti"
+                ], figures_path, "totali_principali", save_flag
+            )
+            return p2
+        elif type == graph_types[2]:
+            p3 = plot_df_lines_bokeh(
+                cases_df, "data", [
+                    "nuovi_positivi",
+                    "nuovi_attualmente_positivi",
+                    "nuovi_deceduti",
+                    "nuovi_dimessi_guariti"
+                ], figures_path, "nuovi_principali", save_flag
+            )
+            return p3
+        elif type == graph_types[3]:
+            p4 = plot_df_lines_bokeh(
+                cases_df, "data", [
+                    "tasso_positivi_tamponi",
+                    "tasso_nuovi_positivi",
+                    "tasso_mortalita",
+                    "tasso_guarigione"
+                ], figures_path, "tassi_principali", save_flag
+            )
+            return p4
+        elif type == graph_types[4]:
+
+            p5 = plot_df_lines_bokeh(
+                cases_df, "data", [
+                    "attualmente_isolamento_domiciliare",
+                    "attualmente_ricoverati",
+                    "attualmente_terapia_intensiva",
+                ], figures_path, "dettaglio_pazienti_attuali", save_flag
+            )
+            return p5
+        elif type == graph_types[5]:
+            p6 = plot_df_lines_bokeh(
+                cases_df, "data", [
+                    "tasso_ricoverati_con_sintomi",
+                    "tasso_terapia_intensiva",
+                    "t1JRpfow927XUoPtmgataMC5m5aLewzNYUP",
+                ], figures_path, "tassi_condizioni_cliniche", save_flag
+            )
+            return p6
