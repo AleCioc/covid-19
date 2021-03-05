@@ -1,5 +1,7 @@
+from covid_19.dashboard.plotter.streamlit_plotter import plot_lines_dashboard_ita_st
 from covid_19.data_manager.plotter.bokeh_plotter import *
 from covid_19.data_manager.config.config import *
+from covid_19.dashboard.plotter import *
 
 
 class ItalyCasesPlotter:
@@ -70,3 +72,32 @@ class ItalyCasesPlotter:
             df_regions_plot.sort_index().loc[0:], [y_col],
             figures_path, y_col, True
         )
+
+    def plot_dashboard_ita_st(self,type, plot_country_dashboard_flag=False, plot_regions_dashboard_flag=False, ):
+
+        self.norm_country_df_ita["data"] = pd.to_datetime(self.norm_country_df_ita["data"])
+
+        country_df = self.norm_country_df_ita
+        regions_df = self.norm_regions_df_ita
+
+        country_path = os.path.join(
+            italy_figures_path,
+            "country"
+        )
+        os.makedirs(country_path, exist_ok=True)
+        plot_lines_dashboard_ita_st(
+            country_df,
+            type
+        )
+        for region, df_region in regions_df.groupby("denominazione_regione"):
+            region_path = os.path.join(
+                italy_figures_path,
+                "regions",
+                region
+            )
+            os.makedirs(region_path, exist_ok=True)
+            plot_lines_dashboard_ita(
+                df_region,
+                region_path,
+                region,
+                plot_regions_dashboard_flag)

@@ -1,5 +1,6 @@
 import os
 import warnings
+
 warnings.filterwarnings("ignore")
 import itertools
 import json
@@ -11,16 +12,16 @@ from bokeh.embed import json_item
 from bokeh.palettes import Dark2_5
 
 import pandas_bokeh
+
 pd.set_option('plotting.backend', 'pandas_bokeh')
 
 
 def plot_comparison_df_bokeh(
-    df, y_cols,
-    figures_path,
-    filename,
-    save_flag=False
+        df, y_cols,
+        figures_path,
+        filename,
+        save_flag=False
 ):
-
     columns_names = list(df.columns)
 
     if save_flag:
@@ -73,13 +74,12 @@ def plot_comparison_df_bokeh(
     return p
 
 
-def plot_df_lines_bokeh (
+def plot_df_lines_bokeh(
         df, x_col, y_cols,
         figures_path,
         filename,
         save_flag=False
 ):
-
     columns_names = list(df.columns)
 
     if save_flag:
@@ -136,7 +136,6 @@ def plot_df_lines_bokeh (
 
 
 def plot_lines_dashboard(cases_df, figures_path, geo_name, plot_dashboard_flag):
-
     if plot_dashboard_flag:
 
         save_flag = False
@@ -180,20 +179,17 @@ def plot_lines_dashboard(cases_df, figures_path, geo_name, plot_dashboard_flag):
     )
 
     if plot_dashboard_flag:
-
         plot_grid = pandas_bokeh.plot_grid([
             [p1, p2],
             [p3, p4],
         ], toolbar_location="left")
 
-        #pandas_bokeh.save(plot_grid)
+        # pandas_bokeh.save(plot_grid)
         save(plot_grid)
 
 
 def plot_lines_dashboard_ita(cases_df, figures_path, geo_name, plot_dashboard_flag):
-
     for save_flag in [False]:
-
         p1 = plot_df_lines_bokeh(
             cases_df, "data", [
                 "totale_tamponi",
@@ -257,24 +253,13 @@ def plot_lines_dashboard_ita(cases_df, figures_path, geo_name, plot_dashboard_fl
             [p5, p6],
         ], toolbar_location="left")
 
-        #pandas_bokeh.save(plot_grid)
+        # pandas_bokeh.save(plot_grid)
         save(plot_grid)
 
 
 
 
-
-
-
-
-
-
-
-
-
-
 def plot_regions_comparison(regions_df, y_col, x_col):
-
     df_regions_plot = pd.DataFrame(
         index=regions_df[x_col].unique()
     )

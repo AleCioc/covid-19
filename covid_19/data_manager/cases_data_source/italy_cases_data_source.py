@@ -180,6 +180,14 @@ class ItalyCasesDataSource:
 		)
 		plotter.plot_dashboard_ita(True, False)
 
+	def plot_dashboard_st (self,type):
+
+		plotter = ItalyCasesPlotter(
+			self.norm_country_df_ita,
+			self.norm_regions_df_ita
+		)
+		plotter.plot_dashboard_ita_st(type=type)
+
 	def save_norm(self):
 
 		self.norm_country_df.to_csv(
