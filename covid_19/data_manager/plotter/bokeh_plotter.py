@@ -363,7 +363,7 @@ def get_bokeh_plotter(cases_df, figures_path, geo_name, plot_dashboard_flag, typ
                 cases_df, "data", [
                     "tasso_ricoverati_con_sintomi",
                     "tasso_terapia_intensiva",
-                    "t1JRpfow927XUoPtmgataMC5m5aLewzNYUP",
+                    "tasso_terapia_intensiva_ricoverati",
                 ], figures_path, "tassi_condizioni_cliniche", save_flag
             )
             return p6

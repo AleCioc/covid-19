@@ -6,7 +6,7 @@ graph_types = [ "tamponi", "totali_principali", "nuovi_principali", "tassi_princ
 
 st.title("Covid-19 dashboard")
 
-
+st.sidebar.title("Seleziona i dati da vedere")
 ds = get_norm_data()
 
 opzioni = ["Andamento Nazionale", "Andamento Regionale"]

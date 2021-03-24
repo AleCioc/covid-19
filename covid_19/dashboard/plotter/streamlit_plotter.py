@@ -47,7 +47,7 @@ def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard
         dataplot = pd.DataFrame(cases_df, columns=[
             "tasso_ricoverati_con_sintomi",
             "tasso_terapia_intensiva",
-            "t1JRpfow927XUoPtmgataMC5m5aLewzNYUP",
+            "tasso_terapia_intensiva_ricoverati",
         ])
 
     dataplot.set_index(cases_df["data"], inplace=True)

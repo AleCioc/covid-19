@@ -8,9 +8,13 @@ Welcome to Covid-19-dashboard's documentation!
 
 
 .. toctree::
+   :hidden:
    :maxdepth: 2
    :caption: Contents:
 
+   Pagine_di_prova/nuovapagina
+   Pagine_di_prova/secondaPagina
+   Tutto ciò che serve <covid_19.rst>
 
 
 Indices and tables
@@ -51,5 +55,6 @@ The graphs, made with Bokeh, have various features shown in the video below.
       <iframe width="560" height="315" src="https://www.youtube.com/embed/MapQ0BZF-RU" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
    <div style="text-align: left;"></>
 
+:ref:`Cross-References to Locations in the Same Document`
 
 
