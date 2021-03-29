@@ -161,6 +161,7 @@ class DashboardAltair:
         st.altair_chart(points & bars)
 
     def grafico_didattico_5(self):
+        st.balloons()
         source = self._data_.norm_regions_df_ita.loc[self._data_.norm_regions_df_ita.denominazione_regione=="piemonte"]
 
         base = alt.Chart(source).mark_area(
