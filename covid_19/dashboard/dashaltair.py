@@ -5,6 +5,7 @@ from covid_19.dashboard.dashboard import get_norm_data
 import geopandas as gpd
 import os
 import datetime
+import vega_datasets as dt
 import matplotlib.pyplot as plt
 regioni = ["abruzzo", "basilicata", "calabria", "campania", "emilia-romagna", "friuliveneziagiulia", "lazio",
                    "liguria", "lombardia", "marche", "molise", "pabolzano", "patrento", "piemonte",
@@ -23,7 +24,7 @@ class DashboardAltair:
 
 
     def stampa(self):
-        grafico = st.sidebar.selectbox("Quale vista vuoi vedere?", [1,2,3])
+        grafico = st.sidebar.selectbox("Quale vista vuoi vedere?", [1,2,3,4,5])
 
         if grafico==1:
             regione = st.sidebar.selectbox("Di quale regione vuoi visualizzare i dati?", regioni)
@@ -34,7 +35,11 @@ class DashboardAltair:
         elif grafico == 3:
             st.set_option('deprecation.showPyplotGlobalUse', False)
             self.grafico_didattico_3()
-
+        elif grafico == 4:
+            regione = st.sidebar.multiselect("Di quale regione vuoi visualizzare i dati?", regioni)
+            self.grafico_didattico_4( regione)
+        elif grafico == 5:
+            self.grafico_didattico_5()
 
     def grafico_didattico_1(self,dati, regione):
         data_df = dati.norm_regions_df_ita
@@ -129,3 +134,46 @@ class DashboardAltair:
         st.pyplot()
 
 
+    def grafico_didattico_4(self, regione):
+
+        source = self._data_.norm_regions_df_ita
+
+        source = source.loc[ source["denominazione_regione"].isin(regione)]
+
+        brush = alt.selection(type='interval')
+
+        points = alt.Chart(source).mark_point().encode(
+            x='data:T',
+            y='totale_casi:Q',
+            color=alt.condition(brush, 'denominazione_regione:N', alt.value('lightgray'))
+        ).add_selection(
+            brush
+        )
+
+        bars = alt.Chart(source).mark_bar().encode(
+            y='denominazione_regione:N',
+            color='denominazione_regione:N',
+            x='max(totale_casi):Q'
+        ).transform_filter(
+            brush
+        ).interactive()
+
+        st.altair_chart(points & bars)
+
+    def grafico_didattico_5(self):
+        source = self._data_.norm_regions_df_ita.loc[self._data_.norm_regions_df_ita.denominazione_regione=="piemonte"]
+
+        base = alt.Chart(source).mark_area(
+            color='goldenrod',
+            opacity=0.3
+        ).encode(
+            x='data:T',
+            y='totale_casi:Q',
+        )
+
+        brush = alt.selection_interval(encodings=['x'], empty='all')
+        background = base.add_selection(brush)
+        selected = base.transform_filter(brush).mark_area(color='goldenrod')
+
+
+        st.altair_chart(background + selected)
