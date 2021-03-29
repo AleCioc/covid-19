@@ -5,7 +5,6 @@ from covid_19.dashboard.dashboard import get_norm_data
 import geopandas as gpd
 import os
 import datetime
-import vega_datasets as dt
 import matplotlib.pyplot as plt
 regioni = ["abruzzo", "basilicata", "calabria", "campania", "emilia-romagna", "friuliveneziagiulia", "lazio",
                    "liguria", "lombardia", "marche", "molise", "pabolzano", "patrento", "piemonte",
