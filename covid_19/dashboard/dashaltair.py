@@ -83,7 +83,8 @@ class DashboardAltair:
             raise ValueError("Data non disponibile")
         #bisogna gestire bolzano
         daRitornare.loc[daRitornare.NOME_REG == "TRENTINO-ALTO ADIGE/SUDTIROL", "valore"] += a_parte[parametro]
-
+        if "tasso" in parametro:
+            daRitornare.loc[daRitornare.NOME_REG == "TRENTINO-ALTO ADIGE/SUDTIROL", "valore"] *= 0.5
         return daRitornare
 
     def grafico_didattico_3(self):
@@ -121,7 +122,7 @@ class DashboardAltair:
             ax=ax,
               column=col,
               cmap="OrRd",
-          label ="a che serve?",
+              label ="a che serve?",
           legend = True,
           categorical = False
           )
