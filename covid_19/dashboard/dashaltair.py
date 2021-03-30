@@ -302,65 +302,68 @@ class DashboardAltair:
         giorno = col1.date_input("Seleziona il giorno", min_value=min, max_value=max, value=max)
         regioni_scelte = col2.multiselect("Quali regioni vuoi analizzare?", regioni)
 
+        if len(regioni_scelte) < 3:
+            st.warning("Seleziona almeno tre regioni")
         #prendo solo i dati di quel giorno specifico
-        data = pd.DataFrame()
-        conta = 0
-        for index, value in self._data_.norm_regions_df_ita.iterrows():
-                tmp = datetime.datetime.fromisoformat(str(value.data))
-                if tmp.month == giorno.month and tmp.year == giorno.year and tmp.day == giorno.day\
-                        and value.denominazione_regione in regioni_scelte:
-                    data = data.append(value)
-                    conta+=1
+        else:
+            data = pd.DataFrame()
+            conta = 0
+            for index, value in self._data_.norm_regions_df_ita.iterrows():
+                    tmp = datetime.datetime.fromisoformat(str(value.data))
+                    if tmp.month == giorno.month and tmp.year == giorno.year and tmp.day == giorno.day\
+                            and value.denominazione_regione in regioni_scelte:
+                        data = data.append(value)
+                        conta+=1
 
 
-        #Matplotlib
-        st.markdown("## Versione con Matplotlib")
+            #Matplotlib
+            st.markdown("## Versione con Matplotlib")
 
-        labels = data.denominazione_regione
-        sizes = data.nuovi_positivi
+            labels = data.denominazione_regione
+            sizes = data.nuovi_positivi
 
-        fig1, ax1 = plt.subplots()
-        wedges, texts = ax1.pie(sizes, wedgeprops=dict(width=0.5), startangle=90)
-        #ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-
-
-        plt.title("Pie chart con matplotlib\n\n", color="#ee2b33", fontsize=20, fontweight="bold")
+            fig1, ax1 = plt.subplots()
+            wedges, texts = ax1.pie(sizes, wedgeprops=dict(width=0.5), startangle=90)
+            #ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
 
-        bbox_props = dict(boxstyle="square,pad=0.3", fc="w", ec="k", lw=0.72)
-        kw = dict(arrowprops=dict(arrowstyle="-"),
-                  bbox=bbox_props, zorder=0, va="center")
-
-        for i, p in enumerate(wedges):
-            ang = (p.theta2 - p.theta1) / 2. + p.theta1
-            y = np.sin(np.deg2rad(ang))
-            x = np.cos(np.deg2rad(ang))
-            horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
-            connectionstyle = "angle,angleA=0,angleB={}".format(ang)
-            kw["arrowprops"].update({"connectionstyle": connectionstyle})
-            ax1.annotate(data.iloc[i].denominazione_regione, xy=(x, y), xytext=(1.35 * np.sign(x), 1.4 * y),
-                        horizontalalignment=horizontalalignment, **kw)
+            plt.title("Pie chart con matplotlib\n\n", color="#ee2b33", fontsize=20, fontweight="bold")
 
 
-        st.pyplot(plt)
+            bbox_props = dict(boxstyle="square,pad=0.3", fc="w", ec="k", lw=0.72)
+            kw = dict(arrowprops=dict(arrowstyle="-"),
+                      bbox=bbox_props, zorder=0, va="center")
 
-        #Altair
+            for i, p in enumerate(wedges):
+                ang = (p.theta2 - p.theta1) / 2. + p.theta1
+                y = np.sin(np.deg2rad(ang))
+                x = np.cos(np.deg2rad(ang))
+                horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
+                connectionstyle = "angle,angleA=0,angleB={}".format(ang)
+                kw["arrowprops"].update({"connectionstyle": connectionstyle})
+                ax1.annotate(data.iloc[i].denominazione_regione, xy=(x, y), xytext=(1.35 * np.sign(x), 1.4 * y),
+                            horizontalalignment=horizontalalignment, **kw)
 
-        st.markdown("## Altair non supporta i Pie chart :(")
 
-        #Bokeh
-        st.markdown("## Versione con Bokeh")
+            st.pyplot(plt)
 
-        data['angle'] = data['nuovi_positivi'] / data['nuovi_positivi'].sum() * 2 * math.pi
-        data['color'] = YlOrBr[len(data)]
+            #Altair
 
-        p = figure(plot_height=350, title="Pie Chart", toolbar_location=None,
-                   tools="hover", tooltips="@denominazione_regione: @nuovi_positivi")
+            st.markdown("## Altair non supporta i Pie chart :(")
 
-        p.wedge(x=0, y=1, radius=0.4,
-                start_angle=cumsum('angle', include_zero=True), end_angle=cumsum('angle'),
-                line_color="white", fill_color='color', legend='denominazione_regione', source=data)
-        p.axis.axis_label = None
-        p.axis.visible = False
-        p.grid.grid_line_color = None
-        st.bokeh_chart(p, use_container_width=True)
+            #Bokeh
+            st.markdown("## Versione con Bokeh")
+
+            data['angle'] = data['nuovi_positivi'] / data['nuovi_positivi'].sum() * 2 * math.pi
+            data['color'] = YlOrBr[len(data)]
+
+            p = figure(plot_height=350, title="Pie Chart", toolbar_location=None,
+                       tools="hover", tooltips="@denominazione_regione: @nuovi_positivi")
+
+            p.wedge(x=0, y=1, radius=0.4,
+                    start_angle=cumsum('angle', include_zero=True), end_angle=cumsum('angle'),
+                    line_color="white", fill_color='color', legend='denominazione_regione', source=data)
+            p.axis.axis_label = None
+            p.axis.visible = False
+            p.grid.grid_line_color = None
+            st.bokeh_chart(p, use_container_width=True)
