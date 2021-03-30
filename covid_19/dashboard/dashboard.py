@@ -1,7 +1,7 @@
 
 import streamlit as st
 from covid_19.data_manager.cases_data_source.italy_cases_data_source import ItalyCasesDataSource
-
+import covid_19.dashboard.dashboard_utils as ut
 graph_types = [ "tamponi", "totali_principali", "nuovi_principali", "tassi_principali", "dettaglio_pazienti_attuali", "tassi_condizioni_cliniche"]
 
 
@@ -16,12 +16,11 @@ def get_norm_data():
 
 class Dashboard:
     def __init__(self):
-        st.title("Covid-19 dashboard")
 
         st.sidebar.title("Seleziona i dati da vedere")
         ds = get_norm_data()
 
-        opzioni = ["Andamento Nazionale", "Andamento Regionale"]
+        opzioni = ["Andamento Nazionale", "Andamento Regionale", "Prova long2wide e viceversa"]
         regioni = ["abruzzo", "basilicata", "calabria", "campania", "emilia-romagna", "friuliveneziagiulia", "lazio",
                    "liguria", "lombardia", "marche", "molise", "pabolzano", "patrento", "piemonte",
                    "puglia", "sardegna", "sicilia", "toscana", "umbria", "valledaosta", "veneto"]
@@ -41,5 +40,15 @@ class Dashboard:
             show_also_bokeh = st.sidebar.checkbox("Mostra anche grafico con Bokeh")
             ds.plot_dashboard_st(type=scelta_grafico, regione=scelta_regione, show_also_bokeh=show_also_bokeh)
 
+        elif scelta_tipo == opzioni[2]:
+            scelte = ut.determina_scelte(ds.norm_regions_df_ita)
+            colonna = st.sidebar.selectbox("Su quale parametro vuoi fare la trasformazione", scelte)
+            st.markdown("### Ho questo dataframe in long form")
+            st.dataframe(ds.norm_regions_df_ita.head(100))
+            st.markdown("### Lo trasformo in wide form interessandomi solo di "+colonna)
+            df = ut.long2wide(ds.norm_regions_df_ita, colonna)
+            st.dataframe(df.head(100))
+            st.markdown("### E ora lo ritrasformo in long form")
+            st.dataframe(ut.wide2long(df,colonna).head(100))
 
 
