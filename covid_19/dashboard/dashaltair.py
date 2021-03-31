@@ -9,10 +9,8 @@ import os
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
-from bokeh.plotting import figure, show
 from covid_19.dashboard.dashboard_utils import determina_scelte
-from bokeh.io import output_file, show
-from bokeh.palettes import Category20c, YlOrBr
+from bokeh.palettes import YlOrBr
 from bokeh.plotting import figure
 from bokeh.transform import cumsum
 regioni = ["abruzzo", "basilicata", "calabria", "campania", "emilia-romagna", "friuliveneziagiulia", "lazio",
