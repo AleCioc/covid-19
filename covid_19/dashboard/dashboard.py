@@ -28,17 +28,15 @@ class Dashboard:
 
         if scelta_tipo == opzioni[0]:
             scelta_grafico = st.sidebar.selectbox("Quale grafico vuoi vedere?", graph_types)
-            "\n"
-            "Hai selezionato: " + scelta_grafico
             show_also_bokeh = st.sidebar.checkbox("Mostra anche grafico con Bokeh")
-            ds.plot_dashboard_st(type=scelta_grafico, regione="italia", show_also_bokeh=show_also_bokeh)
+            ds.plot_dashboard_st(type=scelta_grafico, regione="italia", tipo="Bokeh")
 
         elif scelta_tipo == opzioni[1]:
             scelta_regione = st.sidebar.selectbox("A quale regione sei interessato?", regioni)
             scelta_grafico = st.sidebar.selectbox("Quale grafico vuoi vedere?", graph_types)
             st.markdown('Stai visualizzando l\'andamento regionale di **' + scelta_regione + '**.')
             show_also_bokeh = st.sidebar.checkbox("Mostra anche grafico con Bokeh")
-            ds.plot_dashboard_st(type=scelta_grafico, regione=scelta_regione, show_also_bokeh=show_also_bokeh)
+            ds.plot_dashboard_st(type=scelta_grafico, regione=scelta_regione, tipo="Bokeh")
 
         elif scelta_tipo == opzioni[2]:
             scelte = ut.determina_scelte(ds.norm_regions_df_ita)

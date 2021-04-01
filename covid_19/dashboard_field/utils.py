@@ -72,3 +72,13 @@ def get_norm_data():
     italy_cases_ds.save_norm()
     italy_cases_ds.load_norm()
     return italy_cases_ds
+
+
+@st.cache
+def determina_scelte(dati):
+    scelte_ = list(dati)[6:]
+    scelte_ret = []
+    for scelta in scelte_:
+        if scelta not in ["note", "note_test", "day_threshold_cases", "note_casi", "codice_nuts_1", "codice_nuts_2"]:
+                scelte_ret.append(scelta)
+    return scelte_ret
