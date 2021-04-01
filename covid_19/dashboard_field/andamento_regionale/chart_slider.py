@@ -15,11 +15,11 @@ class ChartSlider(DashboardChart):
 
 
     def show(self):
+        self.show_configuration()
 
         ((start, stop), tipo) = self.show_widgets()
-        extra = " Stai visualizzando "+tipo+" nel periodo tra "+str(start.day)+" "+list_mesi[start.month-1]+" "+str(start.year)+" e "+str(stop.day)+" "+list_mesi[stop.month-1]+" "+str(stop.year)+"."
-        self.subtitle = self.origin_subtitle + extra
-        self.show_configuration()
+        extra = "Stai visualizzando "+tipo+" nel periodo tra "+str(start.day)+" "+list_mesi[start.month-1]+" "+str(start.year)+" e "+str(stop.day)+" "+list_mesi[stop.month-1]+" "+str(stop.year)+"."
+        self.location.markdown("*" +extra+"*")
         daStampare = pd.DataFrame()
         data_df_leggero = self.dati.norm_regions_df_ita[["denominazione_regione", "data", tipo]]
 
