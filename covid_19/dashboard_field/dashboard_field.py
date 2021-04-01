@@ -3,12 +3,15 @@ import streamlit as st
 
 class DashboardField():
 
-    def __init__(self, title="", location=st, widget_location=st, name="", subtitle=""):
+    def __init__(self, title="", location=st, widget_location=st, name="", subtitle="", widget_list=None):
+        if widget_list is None:
+            widget_list = []
         self.title = title
         self.location = location
         self.widget_location = widget_location
         self.name = name
         self.subtitle = subtitle
+        self.widget_list = widget_list
 
     def show_configuration(self):
         """
@@ -17,10 +20,13 @@ class DashboardField():
         """
 
     def show_widgets(self):
-        """
-        Da implementare, mostra i widget nella posizione self.widget_location
-        :return: i valori letti dai widget
-        """
+        ret = []
+        for widget in self.widget_list:
+            r = widget()
+            print(r)
+            ret.append(r)
+        return tuple(ret)
+
 
     def get_name(self):
         return self.name

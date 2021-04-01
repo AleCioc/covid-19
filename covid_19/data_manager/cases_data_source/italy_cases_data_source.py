@@ -180,13 +180,13 @@ class ItalyCasesDataSource:
 		)
 		plotter.plot_dashboard_ita(True, False)
 
-	def plot_dashboard_st (self,type,regione,show_also_bokeh=False):
+	def plot_dashboard_st (self,type,regione,tipo):
 
 		plotter = ItalyCasesPlotter(
 			self.norm_country_df_ita,
 			self.norm_regions_df_ita
 		)
-		plotter.plot_dashboard_ita_st(type=type,regione=regione,show_also_bokeh=show_also_bokeh)
+		plotter.plot_dashboard_ita_st(type=type,regione=regione,tipo=tipo)
 
 	def save_norm(self):
 

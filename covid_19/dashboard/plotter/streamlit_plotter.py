@@ -1,13 +1,13 @@
 
 import pandas as pd
 import streamlit as st
-
+import matplotlib.pyplot as plt
 from covid_19.data_manager.plotter.bokeh_plotter import plot_df_lines_bokeh, get_bokeh_plotter
 
 graph_types = [ "tamponi", "totali_principali", "nuovi_principali", "tassi_principali", "dettaglio_pazienti_attuali", "tassi_condizioni_cliniche"]
 
 
-def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard_flag, type, show_also_bokeh=False):
+def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard_flag, type, tipo="Altair"):
 
     if type not in graph_types:
         return
@@ -50,9 +50,22 @@ def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard
             "tasso_terapia_intensiva_ricoverati",
         ])
 
+
     dataplot.set_index(cases_df["data"], inplace=True)
-    st.line_chart(dataplot)
-    if show_also_bokeh:
-        st.bokeh_chart(get_bokeh_plotter(cases_df, figures_path, geo_name, plot_dashboard_flag, type))
+
+
+    if tipo == "Bokeh":
+        st.bokeh_chart(get_bokeh_plotter(cases_df, figures_path, geo_name, plot_dashboard_flag, type), use_container_width=True)
+    elif tipo == "Altair":
+        st.line_chart(dataplot)
+    elif tipo == "Plotly":
+        fig, ax = plt.subplots()
+        for colonna in dataplot.columns:
+            ax.plot(dataplot.index, dataplot[colonna], label=colonna)
+
+        plt.legend(loc="upper left")
+        ax.set(xlabel='data')
+        ax.grid()
+        st.pyplot(plt)
     expander = st.beta_expander("Mostra Dati")
     expander.write(dataplot)

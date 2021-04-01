@@ -73,7 +73,7 @@ class ItalyCasesPlotter:
             figures_path, y_col, True
         )
 
-    def plot_dashboard_ita_st(self, type, regione, plot_country_dashboard_flag=False, plot_regions_dashboard_flag=False, show_also_bokeh=False):
+    def plot_dashboard_ita_st(self, type, regione, plot_country_dashboard_flag=False, plot_regions_dashboard_flag=False, tipo="Altair"):
         if regione == "italia":
             self.norm_country_df_ita["data"] = pd.to_datetime(self.norm_country_df_ita["data"])
 
@@ -90,7 +90,7 @@ class ItalyCasesPlotter:
                 "country",
                 plot_country_dashboard_flag,
                 type,
-                show_also_bokeh
+                tipo
             )
             return
         regions_df = self.norm_regions_df_ita
@@ -109,4 +109,4 @@ class ItalyCasesPlotter:
                 region,
                 plot_regions_dashboard_flag,
                 type,
-                show_also_bokeh)
+                tipo)

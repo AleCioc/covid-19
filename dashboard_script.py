@@ -18,9 +18,9 @@ def main():
        if prima_volta[0] == False:
               st.success(str1)
               prima_volta[0]=True
-       scelto = home.show_widgets()
+       scelto = home.show_widgets()[0]
        home.show_screen(scelto)
-       st.sidebar.success("Questa pagina è stata visualizzata " + str(contatore[0]) + " volte!")
+       #st.sidebar.success("Questa pagina è stata visualizzata " + str(contatore[0]) + " volte!")
 
 
 @st.cache(allow_output_mutation=True)
