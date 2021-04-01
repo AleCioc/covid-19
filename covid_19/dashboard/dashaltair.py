@@ -67,7 +67,8 @@ class DashboardAltair:
         st.altair_chart(alt.Chart(data_df).mark_point().encode(
             x='data:T',
             y='totale_casi:Q',
-            color="denominazione_regione:N"
+            color=alt.Color("denominazione_regione:N",
+            legend=alt.Legend(orient="top-left", fillColor="#F5F5F5", gradientOpacity=0.6))
         ).interactive(), use_container_width=True)
 
     def grafico_didattico_2(self,dati, regione):

@@ -24,9 +24,8 @@ graph_subtitles = [
     "Questo grafico si focalizza su come sono distribuiti i positivi tra isolamento domiciliare, ricoverati e in terapia intensiva.",
     "Questo grafico si focalizza sui tassi dei pazienti in isolamento domiciliare, ricoverati e in terapia intensiva."
 
-
-
 ]
+list_mesi = ["gennaio","febbraio","marzo","aprile","maggio","giugno", "luglio", "agosto", "settembre", "ottobre","novembre","dicembre"]
 
 regioni = ["abruzzo", "basilicata", "calabria", "campania", "emilia-romagna", "friuliveneziagiulia", "lazio",
                    "liguria", "lombardia", "marche", "molise", "pabolzano", "patrento", "piemonte",
@@ -66,7 +65,7 @@ def transform_region_to_pc(region):
 
 
 
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True, ttl=60*60)
 def get_norm_data():
     italy_cases_ds = ItalyCasesDataSource()
     italy_cases_ds.normalise()

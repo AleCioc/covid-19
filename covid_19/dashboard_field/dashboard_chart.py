@@ -13,6 +13,6 @@ class DashboardChart(DashboardField):
 
     def show(self):
         """
-        Da fare override, ogni grafico si "mostra" a modo suo
+
         :return:
         """

@@ -2,9 +2,10 @@ import streamlit as st
 from covid_19.dashboard_field.dashboard_main import DashboardMain
 from covid_19.dashboard_field.dashboard_screen import DashboardScreen
 from covid_19.dashboard_field.__init__ import create_screens_list
-
+import covid_19.__init__ as start
 
 def main():
+
        prima_volta=inizializza()
        contatore = inizializza_counter()
        contatore[0]+=1
