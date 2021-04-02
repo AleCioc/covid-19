@@ -66,6 +66,7 @@ def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard
         plt.legend(loc="upper left")
         ax.set(xlabel='data')
         ax.grid()
+        plt.xticks(fontsize=8)
         ax.patch.set_alpha(0)
         fig.patch.set_alpha(0)
         st.pyplot(plt)
