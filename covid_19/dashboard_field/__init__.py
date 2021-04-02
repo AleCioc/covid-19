@@ -1,6 +1,7 @@
 from covid_19.dashboard_field.andamento_nazionale.chart_standard import ChartStandard
 from covid_19.dashboard_field.andamento_nazionale.screen_nazione import ScreenNazione
 from covid_19.dashboard_field.andamento_regionale.screen_regione import ScreenRegione
+from covid_19.dashboard_field.confronto_regioni.screen_confronti import ScreenConfronti
 
 from covid_19.dashboard_field.dashboard_chart import DashboardChart
 from covid_19.dashboard_field.dashboard_screen import DashboardScreen
@@ -15,10 +16,10 @@ def create_screens_list():
     sub1 = "In questa schermata puoi visualizzare dati con aggregazione nazionale. Per ogni grafico è riportato il titolo e una breve descrizione. Inoltre, cliccando sull'expander, è possibile visualizzare i dati utilizzati."
     sub2 = "In questa schermata puoi visualizzare dati con aggregazione regionale"
     sub3 = "In questa schermata puoi confrontare i dati di regioni diverse"
-    widget_nazione = [partial(st.sidebar.selectbox, "Scegli quale libreria di plotting utilizzare", ["Altair", "Bokeh", "Plotly"])]
+    widget_nazione = [partial(st.sidebar.selectbox, "Scegli quale libreria di plotting utilizzare", ["Altair", "Bokeh", "Pyplot"])]
     andamento_nazionale = ScreenNazione("Andamento nazionale", "Andamento nazionale", subtitle=sub1,  widget_list=widget_nazione)
     andamento_regionale = ScreenRegione("Andamento regionale", "Andamento regionale", subtitle=sub2)
-    confronti = DashboardScreen("Confronti tra regioni", "Confronti tra regioni", subtitle=sub3)
+    confronti = ScreenConfronti("Confronti tra regioni", "Confronti tra regioni", subtitle=sub3)
 
     return [andamento_nazionale,andamento_regionale,confronti]
 

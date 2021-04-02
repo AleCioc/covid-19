@@ -1,3 +1,4 @@
+from functools import partial, partialmethod
 import streamlit as st
 from covid_19.dashboard_field.dashboard_main import DashboardMain
 from covid_19.dashboard_field.dashboard_screen import DashboardScreen
@@ -30,5 +31,9 @@ def inizializza():
 @st.cache(allow_output_mutation=True)
 def inizializza_counter():
        return  [0]
+
+
+
+
 
 main()

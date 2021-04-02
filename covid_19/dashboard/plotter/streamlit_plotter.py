@@ -58,7 +58,7 @@ def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard
         st.bokeh_chart(get_bokeh_plotter(cases_df, figures_path, geo_name, plot_dashboard_flag, type), use_container_width=True)
     elif tipo == "Altair":
         st.line_chart(dataplot)
-    elif tipo == "Plotly":
+    elif tipo == "Pyplot":
         fig, ax = plt.subplots()
         for colonna in dataplot.columns:
             ax.plot(dataplot.index, dataplot[colonna], label=colonna)
@@ -66,6 +66,8 @@ def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard
         plt.legend(loc="upper left")
         ax.set(xlabel='data')
         ax.grid()
+        ax.patch.set_alpha(0)
+        fig.patch.set_alpha(0)
         st.pyplot(plt)
     expander = st.beta_expander("Mostra Dati")
     expander.write(dataplot)

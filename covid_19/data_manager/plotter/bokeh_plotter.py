@@ -133,7 +133,8 @@ def plot_df_lines_bokeh(
             out_f.write(item_text)
 
         save(p)
-
+    p.background_fill_alpha = 0
+    p.border_fill_alpha = 0
     return p
 
 

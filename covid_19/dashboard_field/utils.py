@@ -1,3 +1,4 @@
+from functools import partial
 
 import streamlit as st
 
@@ -82,3 +83,35 @@ def determina_scelte(dati):
         if scelta not in ["note", "note_test", "day_threshold_cases", "note_casi", "codice_nuts_1", "codice_nuts_2"]:
                 scelte_ret.append(scelta)
     return scelte_ret
+
+
+def st_functional_columns(lista, sizes=None):
+       if sizes is None:
+              cols = st.beta_columns(len(lista))
+       elif len(sizes) != len(lista):
+              raise ValueError("func and size must have the same length")
+       else:
+              cols = st.beta_columns(sizes)
+
+       i = 0
+       ret = []
+       for el in lista:
+
+              if len(el) == 0:
+                  ret.append(None)
+              else:
+                  if el[0] == "write":
+                         f = partial(cols[i].write, *el[1:])
+                  elif el[0] == "beta_expander":
+                         f = partial(cols[i].beta_expander, *el[1:])
+                  elif el[0] == "selectbox":
+                         f = partial(cols[i].selectbox, *el[1:])
+                  elif el[0] == "slider":
+                         f = partial(cols[i].slider, *el[1:])
+                  elif el[0] == "multiselect":
+                      f = partial(cols[i].multiselect, *el[1:])
+
+                  ret.append(f())
+              i += 1
+
+       return ret
