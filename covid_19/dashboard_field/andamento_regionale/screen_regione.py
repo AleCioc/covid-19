@@ -1,6 +1,7 @@
 from covid_19.dashboard_field import ChartStandard
 from covid_19.dashboard_field.andamento_regionale.char_bar import ChartBar
 from covid_19.dashboard_field.andamento_regionale.chart_slider import ChartSlider
+from covid_19.dashboard_field.confronto_regioni.chart_pie import ChartPie
 from covid_19.dashboard_field.dashboard_report import DashboardReport
 from covid_19.dashboard_field.dashboard_screen import DashboardScreen
 from covid_19.dashboard_field.utils import regioni, transform_region_to_pc, transform_regions_pc_to_human, transform_regions_pc_to_human_all

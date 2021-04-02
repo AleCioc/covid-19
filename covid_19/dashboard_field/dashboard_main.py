@@ -33,3 +33,8 @@ class DashboardMain(DashboardField):
                 screen.show_configuration()
                 screen.show_charts()
                 break
+
+    def show(self):
+        self.show_configuration()
+        scelto = self.show_widgets()[0]
+        self.show_screen(scelto)

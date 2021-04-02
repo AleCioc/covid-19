@@ -24,7 +24,6 @@ def create_screens_list():
     return [andamento_nazionale,andamento_regionale,confronti]
 
 
-
 def create_andamentonazionale_charts(tipo="Altair"):
     data = get_norm_data()
     ret = []

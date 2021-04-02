@@ -89,6 +89,7 @@ def st_functional_columns(lista, sizes=None):
        if sizes is None:
               cols = st.beta_columns(len(lista))
        elif len(sizes) != len(lista):
+
               raise ValueError("func and size must have the same length")
        else:
               cols = st.beta_columns(sizes)
@@ -110,6 +111,8 @@ def st_functional_columns(lista, sizes=None):
                          f = partial(cols[i].slider, *el[1:])
                   elif el[0] == "multiselect":
                       f = partial(cols[i].multiselect, *el[1:])
+                  elif el[0] == "date_input":
+                      f = partial(cols[i].date_input, *el[1:])
 
                   ret.append(f())
               i += 1
