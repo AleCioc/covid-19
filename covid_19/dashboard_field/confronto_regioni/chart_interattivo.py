@@ -22,27 +22,31 @@ class ChartInterattivo(DashboardChart):
 
         regioni = [ transform_region_to_pc(regione) for regione in regioni ]
 
-        source = self.dati.loc[self.dati["denominazione_regione"].isin(regioni)]
+        if len(regioni) < 1:
+            st.warning("Seleziona almeno una regione")
 
-        brush = alt.selection(type='interval')
+        else:
+            source = self.dati.loc[self.dati["denominazione_regione"].isin(regioni)]
 
-        titolo = par.split("_")
-        titolo = " ".join(titolo)
-        points = alt.Chart(source).mark_point().encode(
-            x=alt.X('data:T', axis=alt.Axis(title="data")),
-            y=alt.Y(par, axis=alt.Axis(title=titolo)),
-            color=alt.condition(brush, 'denominazione_regione:N', alt.value('lightgray'), legend=None)
-        ).add_selection(
-            brush
-        )
+            brush = alt.selection(type='interval')
 
-        bars = alt.Chart(source).mark_bar().encode(
-            x=alt.X('max('+par+'):Q', axis=alt.Axis(title="Massimo di "+titolo)),
-            y=alt.Y('denominazione_regione', axis=alt.Axis(title="Denominazione della regione")),
-            color='denominazione_regione:N'
-        ).transform_filter(
-            brush
-        ).interactive()
+            titolo = par.split("_")
+            titolo = " ".join(titolo)
+            points = alt.Chart(source).mark_point().encode(
+                x=alt.X('data:T', axis=alt.Axis(title="data")),
+                y=alt.Y(par, axis=alt.Axis(title=titolo)),
+                color=alt.condition(brush, 'denominazione_regione:N', alt.value('lightgray'), legend=None)
+            ).add_selection(
+                brush
+            )
 
-        st.altair_chart(points & bars, use_container_width=True)
+            bars = alt.Chart(source).mark_bar().encode(
+                x=alt.X('max('+par+'):Q', axis=alt.Axis(title="Massimo di "+titolo)),
+                y=alt.Y('denominazione_regione', axis=alt.Axis(title="Denominazione della regione")),
+                color='denominazione_regione:N'
+            ).transform_filter(
+                brush
+            ).interactive()
+
+            st.altair_chart(points & bars, use_container_width=True)
 
