@@ -1,4 +1,4 @@
-from bokeh_plot import figure
+from bokeh.plotting import figure
 
 from covid_19.dashboard_field.dashboard_chart import DashboardChart
 from covid_19.dashboard_field.utils import list_mesi
