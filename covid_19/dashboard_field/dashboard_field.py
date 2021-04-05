@@ -23,7 +23,6 @@ class DashboardField():
         ret = []
         for widget in self.widget_list:
             r = widget()
-            print(r)
             ret.append(r)
         return tuple(ret)
 

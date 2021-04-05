@@ -1,9 +1,10 @@
 from functools import partial
-
+import git
+import os
 import streamlit as st
-
+from covid_19.data_manager.__init__ import pull
 from covid_19.dashboard_field.dashboard_screen import DashboardScreen
-from covid_19.data_manager.cases_data_source.italy_cases_data_source import ItalyCasesDataSource
+from covid_19.data_manager.cases_data_source.italy_cases_data_source import ItalyCasesDataSource, raw_cases_paths_dict
 
 graph_types = [ "tamponi", "totali_principali", "nuovi_principali", "tassi_principali", "dettaglio_pazienti_attuali", "tassi_condizioni_cliniche"]
 NUMERO_GRAFICI = len(graph_types)
@@ -65,15 +66,30 @@ def transform_region_to_pc(region):
 
 
 
+## fare funzione wrapper a questa, che
+# -pulla
+# -calcola len della directory dati
+# -chiama get_norm_data con parametro il numero di entry. Cosi se son le stesse di prima prende la versione cachata, altrimenti ne
+# crea una nuova. Vedere la stessa cosa nel dizionario, mettendo come chiavi [len][regione][tipo] e se diz[len] è vuoto, svuotare tutto il rest
+# directory: C:\User\franc\PycharmProjects\covid-19\covid_19\data_manager\data\raw\cases\italy\COVID-19\dati-andamento-nazionale
+# ttl non penso servirà più, immagino sia una lru cache (male che vada la forziamo con functools)
 
-@st.cache(allow_output_mutation=True, ttl=60*60)
 def get_norm_data():
+
+    pull()
+
+    key = len(os.listdir(os.path.join(raw_cases_paths_dict["italy"],"dati-andamento-nazionale")))
+    return get_norm_data_cached(key)
+
+
+
+@st.cache(allow_output_mutation=True, max_entries=2)
+def get_norm_data_cached(key):
     italy_cases_ds = ItalyCasesDataSource()
     italy_cases_ds.normalise()
     italy_cases_ds.save_norm()
     italy_cases_ds.load_norm()
     return italy_cases_ds
-
 
 @st.cache
 def determina_scelte(dati):

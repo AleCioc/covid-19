@@ -9,6 +9,10 @@ from covid_19.dashboard_field.utils import NUMERO_GRAFICI, graph_types, graph_su
 import streamlit as st
 import datetime
 from functools import partial
+import os
+
+from covid_19.data_manager import raw_cases_paths_dict
+
 
 class ScreenRegione(DashboardScreen):
 
@@ -36,13 +40,19 @@ class ScreenRegione(DashboardScreen):
         DashboardReport("Report", self.get_last_day(self.data, regione), regione).show()
 
         #grafici classici
-        if tipo in self.chart_dict and regione in self.chart_dict[tipo]:
+        giorno = len(os.listdir(os.path.join(raw_cases_paths_dict["italy"], "dati-andamento-nazionale")))
+
+        if giorno not in self.chart_dict:
+            self.chart_dict = {}
+            self.chart_dict[giorno] = {}
+
+        if tipo in self.chart_dict[giorno] and regione in self.chart_dict[giorno][tipo]:
             for i in range(NUMERO_GRAFICI):
-                self.chart_dict[tipo][regione][i].show()
+                self.chart_dict[giorno][tipo][regione][i].show()
         else:
-            if tipo not in self.chart_dict:
-                self.chart_dict[tipo] = {}
-            self.chart_dict[tipo][regione] = []
+            if tipo not in self.chart_dict[giorno]:
+                self.chart_dict[giorno][tipo] = {}
+            self.chart_dict[giorno][tipo][regione] = []
 
             for i in range(NUMERO_GRAFICI):
                 articolo = "in"
@@ -50,11 +60,11 @@ class ScreenRegione(DashboardScreen):
                     articolo = articoli_regioni_no_in[regione]
 
                 titolo = graph_titles[i]+" "+articolo+" "+transform_regions_pc_to_human(regione)
-                self.chart_dict[tipo][regione].append((ChartStandard(self.data, graph_types[i], title=titolo,
+                self.chart_dict[giorno][tipo][regione].append((ChartStandard(self.data, graph_types[i], title=titolo,
                                                                subtitle=graph_subtitles[i], regione=regione, tipo=tipo)))
 
             for i in range(NUMERO_GRAFICI):
-                self.chart_dict[tipo][regione][i].show()
+                self.chart_dict[giorno][tipo][regione][i].show()
 
         #Grafico extra 1
 
