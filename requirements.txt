@@ -12,3 +12,5 @@ pytz~=2019.2
 numpy~=1.19.5
 sklearn~=0.0
 altair~=4.1.0
+geojson
+plotly
