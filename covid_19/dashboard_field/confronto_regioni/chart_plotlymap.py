@@ -15,8 +15,8 @@ class ChartMapPlotly(DashboardChart):
         self.dati = dati.norm_regions_df_ita
         self.tipo = tipo
 
-        self.traduci_geojson = { "piemonte":'Piemonte', "valledaosta":"Valle d'Aosta/VallÃ©e d'Aoste", "lombardia":'Lombardia',
-                    "patrento":'Trentino-Alto Adige/SÃ¼dtirol', "veneto":'Veneto', "friuliveneziagiulia":'Friuli-Venezia Giulia',
+        self.traduci_geojson = { "piemonte":'Piemonte', "valledaosta":"Valle d'Aosta/Vallée d'Aoste", "lombardia":'Lombardia',
+                    "patrento":'Trentino-Alto Adige/Südtirol', "veneto":'Veneto', "friuliveneziagiulia":'Friuli-Venezia Giulia',
                     "liguria":'Liguria', "emilia-romagna":'Emilia-Romagna', "toscana":'Toscana', "umbria":'Umbria',
                     "marche":'Marche', "lazio":'Lazio', "abruzzo":'Abruzzo', "molise":'Molise', "campania":'Campania',
                     "puglia":'Puglia', "basilicata":'Basilicata', "calabria":'Calabria', "sicilia":'Sicilia', "sardegna":'Sardegna'}
@@ -28,10 +28,11 @@ class ChartMapPlotly(DashboardChart):
         #come parametri avro' parametro da valutare e il giorno
         giorno, parametro = (self.show_widgets())[0]
 
-        with open(os.path.join(os.curdir, "covid_19", "data_manager", "limits_IT_regions.geojson")) as f:
+        with open(os.path.join(os.curdir, "covid_19", "data_manager", "limits_IT_regions.geojson"), encoding="utf-8") as f:
             gj = geojson.load(f)
 
-        regioni = [gj["features"][i]["properties"]["reg_name"] for i in range(20)]
+        #regioni = [gj["features"][i]["properties"]["reg_name"] for i in range(20)]
+        #print(regioni)
         df = self.filtra_dati_json(giorno, parametro)
         fig = px.choropleth_mapbox(df, geojson=gj, color=parametro,
                                    locations=df.NOME_REG, featureidkey="properties.reg_name",
