@@ -1,6 +1,7 @@
 
 import pandas as pd
 import streamlit as st
+import seaborn as sns
 import matplotlib.pyplot as plt
 from covid_19.data_manager.plotter.bokeh_plotter import plot_df_lines_bokeh, get_bokeh_plotter
 

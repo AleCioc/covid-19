@@ -1,15 +1,17 @@
 import math
-
 import altair as alt
 import streamlit as st
 import pandas as pd
-from covid_19.dashboard.dashboard import get_norm_data
+import geojson
 import geopandas as gpd
 import os
 import datetime
 import numpy as np
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
+import plotly.express as px
 from covid_19.dashboard.dashboard_utils import determina_scelte
+from covid_19.dashboard_field.utils import get_norm_data
 from bokeh.palettes import YlOrBr
 from bokeh.plotting import figure
 from bokeh.transform import cumsum
@@ -21,14 +23,19 @@ traduci = {"abruzzo":"ABRUZZO", "basilicata":"BASILICATA", "calabria":"CALABRIA"
            "emilia-romagna":"EMILIA-ROMAGNA", "friuliveneziagiulia":"FRIULI VENEZIA GIULIA", "lazio":"LAZIO",
             "liguria":"LIGURIA", "lombardia":"LOMBARDIA", "marche":"MARCHE", "molise":"MOLISE", "patrento":"TRENTINO-ALTO ADIGE/SUDTIROL",
             "piemonte":"PIEMONTE", "puglia":"PUGLIA", "sardegna":"SARDEGNA", "sicilia":"SICILIA",
-           "toscana":"TOSCANA", "umbria":"UMBRIA", "valledaosta":"VALLE D'AOSTA/VALLÉE D'AOSTE VALLE D'AOSTA/VALLÉE D'AOSTE"
-                                                                                       , "veneto":"VENETO"}
+           "toscana":"TOSCANA", "umbria":"UMBRIA", "valledaosta":"VALLE D'AOSTA", "veneto":"VENETO"}
+traduci_geojson = { "piemonte":'Piemonte', "valledaosta":"Valle d'Aosta/VallÃ©e d'Aoste", "lombardia":'Lombardia',
+                    "patrento":'Trentino-Alto Adige/SÃ¼dtirol', "veneto":'Veneto', "friuliveneziagiulia":'Friuli-Venezia Giulia',
+                    "liguria":'Liguria', "emilia-romagna":'Emilia-Romagna', "toscana":'Toscana', "umbria":'Umbria',
+                    "marche":'Marche', "lazio":'Lazio', "abruzzo":'Abruzzo', "molise":'Molise', "campania":'Campania',
+                    "puglia":'Puglia', "basilicata":'Basilicata', "calabria":'Calabria', "sicilia":'Sicilia', "sardegna":'Sardegna'}
+
 class DashboardAltair:
 
     def __init__(self):
         self._data_ = get_norm_data()
         self.scelte = ["Confronto tra regioni", "Intervallo temporale", "Mappe", "Confronto interattivo", "Totale cumulato",
-                       "Confronto lineplot", "Confronto istogrammi", "Confronto pie chart"]
+                       "Confronto lineplot", "Confronto istogrammi", "Confronto pie chart", "Plotlymap"]
 
 
     def stampa(self):
@@ -59,6 +66,8 @@ class DashboardAltair:
             self.confronto_istogrammi()
         elif grafico == self.scelte[7]:
             self.confronto_piecharts()
+        elif grafico == self.scelte[8]:
+            self.plotlyMap()
 
     def grafico_didattico_1(self,dati, regione1,regione2):
         data_df = dati.norm_regions_df_ita
@@ -366,3 +375,53 @@ class DashboardAltair:
             p.axis.visible = False
             p.grid.grid_line_color = None
             st.bokeh_chart(p, use_container_width=True)
+
+    def plotlyMap(self):
+
+        col1, col2 = st.beta_columns(2)
+        min = datetime.datetime.fromisoformat(str(self._data_.norm_regions_df_ita.data.min()))
+        max = datetime.datetime.fromisoformat(str(self._data_.norm_regions_df_ita.data.max()))
+        giorno = col1.date_input("Seleziona il giorno", min_value=min, max_value=max, value=max)
+        scelte_ = determina_scelte(self._data_.norm_regions_df_ita)
+        parametro = col2.selectbox("Scegli quale parametro valutare", scelte_)
+
+        with open(os.path.join(os.curdir, "covid_19", "data_manager","limits_IT_regions.geojson")) as f:
+            gj = geojson.load(f)
+
+        regioni = [gj["features"][i]["properties"]["reg_name"] for i in range(20)]
+        df = self.filtra_dati_json(giorno, parametro)
+        fig = px.choropleth_mapbox(df, geojson=gj, color=parametro,
+                                   locations=df.NOME_REG, featureidkey="properties.reg_name",
+                                   center={"lat": 41.902782, "lon": 12.496366},
+                                   mapbox_style="carto-positron", zoom=4.35,
+                                   color_continuous_scale="Viridis")
+        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+        st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+    def filtra_dati_json(self, giorno, parametro):
+        dati = self._data_.norm_regions_df_ita
+        daRitornare = pd.DataFrame()
+
+        for key, val in dati.iterrows():
+            data_comoda=datetime.datetime.fromisoformat(str(val.data))
+            if data_comoda.day==giorno.day and data_comoda.year==giorno.year and data_comoda.month==giorno.month:
+                if val.denominazione_regione != "pabolzano":
+                    newData = { "NOME_REG": traduci_geojson[val.denominazione_regione],
+                                parametro:val[parametro]}
+                    newData = pd.Series(newData)
+                    daRitornare = daRitornare.append(newData, ignore_index=True)
+                else:
+                    a_parte = val
+        if len(daRitornare) == 0:
+            raise ValueError("Data non disponibile")
+        #bisogna gestire bolzano
+        daRitornare.loc[daRitornare.NOME_REG == "Trentino-Alto Adige/SÃ¼dtirol", parametro] += a_parte[parametro]
+        if "tasso" in parametro:
+            daRitornare.loc[daRitornare.NOME_REG == "TRENTINO-ALTO ADIGE/SUDTIROL", parametro] *= 0.5
+        return daRitornare
+
+
+

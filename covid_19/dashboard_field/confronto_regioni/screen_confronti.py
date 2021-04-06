@@ -2,7 +2,7 @@ import datetime
 from functools import partial
 
 from covid_19.dashboard_field.confronto_regioni.chart_interattivo import ChartInterattivo
-from covid_19.dashboard_field.confronto_regioni.chart_map import ChartMap
+from covid_19.dashboard_field.confronto_regioni.chart_plotlymap import ChartMapPlotly
 from covid_19.dashboard_field.confronto_regioni.chart_pie import ChartPie
 from covid_19.dashboard_field.dashboard_screen import DashboardScreen
 from covid_19.dashboard_field.utils import get_norm_data, transform_regions_pc_to_human_all, determina_scelte, st_functional_columns
@@ -32,7 +32,7 @@ class ScreenConfronti(DashboardScreen):
         arg = [["date_input","seleziona il giorno", max, min, max],
                ["selectbox", "Quale parametro vuoi valutare?", determina_scelte(self.data.norm_regions_df_ita)]]
         wl = [ partial(st_functional_columns, arg)]
-        ChartMap(name, name, subtitle, self.data, widget_list=wl).show()
+        ChartMapPlotly(name, name, subtitle, self.data, widget_list=wl).show()
 
         #piechart
         name = "Grafico a torta"
