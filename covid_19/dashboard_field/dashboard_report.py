@@ -11,7 +11,7 @@ class DashboardReport(DashboardChart):
         self.regione=regione
         self.dati=dati
 
-    def show_configuration(self):
+    def show_heading(self):
         #imposto il nome
         self.title = "Report del "+self.fornisci_data(self.dati)
         str1 = "Nel giorno "+self.fornisci_data(self.dati)+" si sono registrati "+str(int(self.dati.nuovi_positivi))+" casi "
@@ -26,12 +26,12 @@ class DashboardReport(DashboardChart):
         str1 = str1 + "\n Aprendo l'expander, è possibile visualizzare ulteriori dati sulla regione "+transform_regions_pc_to_human(regione=self.regione)+". "
         self.subtitle = str1
 
-        super(DashboardReport, self).show_configuration()
+        super(DashboardReport, self).show_heading()
         exp = st.beta_expander("Apri per visualizzare le informazioni complete.")
         exp.dataframe(self.dati)
 
     def show(self):
-        self.show_configuration()
+        self.show_heading()
 
 
     def fornisci_data(self, dati):

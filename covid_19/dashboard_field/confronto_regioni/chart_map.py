@@ -25,7 +25,7 @@ class ChartMap(DashboardChart):
         , "veneto": "VENETO"}
 
     def show(self):
-        self.show_configuration()
+        self.show_heading()
 
         #come parametri avro' parametro da valutare e il giorno
         giorno, parametro = (self.show_widgets())[0]

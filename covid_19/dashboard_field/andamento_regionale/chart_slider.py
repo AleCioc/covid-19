@@ -20,7 +20,7 @@ class ChartSlider(DashboardChart):
 
 
     def show(self):
-        self.show_configuration()
+        self.show_heading()
 
 
         a = (self.show_widgets())[0]

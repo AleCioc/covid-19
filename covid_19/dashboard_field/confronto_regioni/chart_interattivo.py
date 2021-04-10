@@ -12,7 +12,7 @@ class ChartInterattivo(DashboardChart):
 
 
     def show(self):
-        self.show_configuration()
+        self.show_heading()
 
         #come parametri avro' una lista di regioni e il parametro da valutare
         a = (self.show_widgets())[0]

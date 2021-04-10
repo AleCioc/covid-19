@@ -22,7 +22,7 @@ class ChartPie(DashboardChart):
 
 
     def show(self):
-        self.show_configuration()
+        self.show_heading()
 
         #come parametri avro' la libreria, il giorno, il parametro da valutare e le regioni
         self.tipo, parametro, giorno, regioni = (self.show_widgets())[0]

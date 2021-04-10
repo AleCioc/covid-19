@@ -18,7 +18,7 @@ class ChartBar(DashboardChart):
 
 
     def show(self):
-        self.show_configuration()
+        self.show_heading()
 
         #avremo come widget: libreria grafica che arriva dalla regione, il (mese, anno) e il parametro
         ret = self.show_widgets()[0]

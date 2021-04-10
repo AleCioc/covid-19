@@ -9,7 +9,7 @@ class DashboardScreen(DashboardField):
             chart_list = []
         self.chart_list = chart_list
 
-    def show_configuration(self):
+    def show_heading(self):
         self.location.markdown("## "+self.title)
         self.location.write(self.subtitle)
 

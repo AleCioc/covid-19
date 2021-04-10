@@ -12,5 +12,5 @@ class ChartStandard(DashboardChart):
 
 
     def show(self):
-        self.show_configuration()
+        self.show_heading()
         self.data.plot_dashboard_st(type=self.parametro, regione=self.regione, tipo=self.tipo)
