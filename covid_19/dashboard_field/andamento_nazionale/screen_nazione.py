@@ -15,6 +15,8 @@ class ScreenNazione(DashboardScreen):
         self.stato = stato
 
     def show_charts(self):
+        # controllo se ho i dati aggiornati. Se sono aggiornati bene, altrimenti scarica i nuovi
+        self.data = get_norm_data()
         tipo = self.show_widgets()[0]
         giorno = len(os.listdir(os.path.join(raw_cases_paths_dict["italy"],"dati-andamento-nazionale")))
 

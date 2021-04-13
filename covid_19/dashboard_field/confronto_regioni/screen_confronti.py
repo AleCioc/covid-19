@@ -15,7 +15,8 @@ class ScreenConfronti(DashboardScreen):
         self.data = get_norm_data()
 
     def show_charts(self):
-
+        # controllo se ho i dati aggiornati. Se sono aggiornati bene, altrimenti scarica i nuovi
+        self.data = get_norm_data()
         #massimi e confronti
         name = "Andamento temporale e massimi"
         subtitle = "In questo grafico interattivo puoi selezionare il periodo (direttamente sul grafico), le regioni e il parametro (dai widget)."

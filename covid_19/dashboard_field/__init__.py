@@ -10,7 +10,7 @@ from covid_19.data_manager.cases_data_source.italy_cases_data_source import Ital
 from covid_19.dashboard_field.utils import *
 from functools import partial
 
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True, show_spinner=False)
 def create_screens_list():
 
     sub1 = "In questa schermata puoi visualizzare dati con aggregazione nazionale. Per ogni grafico è riportato il titolo e una breve descrizione. Inoltre, cliccando sull'expander, è possibile visualizzare i dati utilizzati."

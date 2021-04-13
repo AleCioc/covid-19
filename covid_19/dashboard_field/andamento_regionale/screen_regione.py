@@ -34,6 +34,9 @@ class ScreenRegione(DashboardScreen):
 
     def show_charts(self):
 
+        #controllo se ho i dati aggiornati. Se sono aggiornati bene, altrimenti scarica i nuovi
+        self.data = get_norm_data()
+
         regione, tipo = self.show_widgets()
 
         #report

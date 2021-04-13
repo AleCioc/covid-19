@@ -79,11 +79,12 @@ def get_norm_data():
     pull()
 
     key = len(os.listdir(os.path.join(raw_cases_paths_dict["italy"],"dati-andamento-nazionale")))
-    return get_norm_data_cached(key)
+    with st.spinner(text="Sto scaricando gli ultimi aggiornamenti dalla Protezione Civile."):
+        return get_norm_data_cached(key)
 
 
 
-@st.cache(allow_output_mutation=True, max_entries=2)
+@st.cache(allow_output_mutation=True, max_entries=2, show_spinner=False)
 def get_norm_data_cached(key):
     italy_cases_ds = ItalyCasesDataSource()
     italy_cases_ds.normalise()
