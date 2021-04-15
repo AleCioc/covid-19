@@ -1,6 +1,7 @@
 venv*/
 
 covid_19/data_manager/data/*
+.streamlit/secrets.toml
 covid_19/data_manager/figures/*
 validation_results/*
 

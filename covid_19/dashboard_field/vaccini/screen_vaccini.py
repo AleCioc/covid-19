@@ -4,6 +4,7 @@ from functools import partial
 from covid_19.dashboard_field.dashboard_screen import DashboardScreen
 from covid_19.dashboard_field.utils import get_norm_data, transform_regions_pc_to_human_all, determina_scelte, st_functional_columns
 from covid_19.dashboard_field.vaccini.chart_barvaccini import ChartBarVaccini
+from covid_19.dashboard_field.vaccini.chart_barvacciniitalia import ChartBarVacciniItalia
 from covid_19.dashboard_field.vaccini.chart_pydeckmap import ChartPydeckMap
 
 
@@ -26,7 +27,14 @@ class ScreenVaccini(DashboardScreen):
 
         ChartPydeckMap(name, name, subtitle, dati).show()
 
-        name = "Andamento vaccinazioni per categorie"
+        name = "Andamento vaccinazioni per categorie a livello nazionale"
+        subtitle = "In questo grafico è possibile selezionare un mese. Verrà mostrato, giorno per giorno, il numero di" \
+                   " vaccini effettuati per ogni categoria. Passando con il mouse sopra il grafico è possibile leggere i valori esatti."
+        dati = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/61142006d3ece74fe105ceb91b5a3dfc7260eb37/dati/somministrazioni-vaccini-summary-latest.csv"
+
+        ChartBarVacciniItalia(name, name, subtitle, dati).show()
+
+        name = "Andamento vaccinazioni per categorie a livello regionale"
         subtitle= "In questo grafico è possibile selezionare una specifica regione e un mese. Verrà mostrato, giorno per giorno, il numero di" \
                   " vaccini effettuati per ogni categoria. Passando con il mouse sopra il grafico è possibile leggere i valori esatti."
         dati = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/61142006d3ece74fe105ceb91b5a3dfc7260eb37/dati/somministrazioni-vaccini-summary-latest.csv"

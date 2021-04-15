@@ -9,10 +9,9 @@ data = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/611420
 
 df = pd.read_csv(data, index_col=-1)
 
-in_region = df["area"] == "UMB"
 after_start_date = df["data_somministrazione"] >= "2021-03-01"
 before_end_date = df["data_somministrazione"] <= "2021-03-31"
-between_two_dates_and_in = after_start_date & before_end_date & in_region
+between_two_dates_and_in = after_start_date & before_end_date
 df = df.loc[between_two_dates_and_in]
 
 
@@ -31,15 +30,12 @@ df = df.sort_values("data_somministrazione")
 import altair as alt
 from vega_datasets import data
 
-source = data.barley()
 
-
-st.dataframe(source)
+st.dataframe(df)
 small = df[["data_somministrazione","Operatori (socio)sanitari"
             , 'Personale non sanitario', 'Altro',
             'Ospiti RSA', 'Over 80', 'Forze armate', 'Personale scolastico']]
 small = small.melt(id_vars='data_somministrazione', var_name='categoria', value_name='numero_vaccini')
-
 
 st.altair_chart(
     alt.Chart(small).mark_bar().encode(
