@@ -4,3 +4,6 @@ backgroundColor="#F5F5F5"
 secondaryBackgroundColor="#ffffff"
 textColor="#231f20"
 font = "sans serif"
+
+[mapbox]
+token = "pk.eyJ1IjoiZnJhbmNlc2NvZGVhZ2xpbyIsImEiOiJja244enI0YzcxMno2MnBwOW94MXFwb2toIn0.ogZwFj2_0mfGMdwwvdkHRQ"
