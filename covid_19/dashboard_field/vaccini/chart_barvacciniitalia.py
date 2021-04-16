@@ -30,7 +30,7 @@ class ChartBarVacciniItalia(DashboardChart):
             r = requests.head(self.datalink)
             code = r.headers['Content-Length']
             df = self.read_data_from_git(mese, code)
-
+        st.dataframe(df)
         with st.spinner("Sto creando il barchart"):
             chart = self.get_chart(df)
 
@@ -57,6 +57,7 @@ class ChartBarVacciniItalia(DashboardChart):
         small = small.sort_values("data_somministrazione")
         df = df.groupby(by=["data_somministrazione"], as_index=False).sum()
         small = small.melt(id_vars='data_somministrazione', var_name='categoria', value_name='numero_vaccini')
+        small = small.groupby(["data_somministrazione", 'categoria'], as_index=False).sum()
         return small
 
     @st.cache(show_spinner=False, allow_output_mutation=True)
