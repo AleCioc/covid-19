@@ -1,5 +1,7 @@
 from functools import partial
 
+import requests
+
 from covid_19.dashboard_field.utils import st_functional_columns
 from covid_19.dashboard_field.dashboard_chart import DashboardChart
 import streamlit as st
@@ -25,7 +27,9 @@ class ChartBarVacciniItalia(DashboardChart):
         mese = self.show_widgets()[0][0]
 
         with st.spinner("Sto scaricando i dati aggiornati da GitHub"):
-            df = self.read_data_from_git(mese)
+            r = requests.head(self.datalink)
+            code = r.headers['Content-Length']
+            df = self.read_data_from_git(mese, code)
 
         with st.spinner("Sto creando il barchart"):
             chart = self.get_chart(df)
@@ -33,7 +37,7 @@ class ChartBarVacciniItalia(DashboardChart):
         st.altair_chart(chart, use_container_width=True)
 
     @st.cache(show_spinner=False)
-    def read_data_from_git(self, month):
+    def read_data_from_git(self, month, unique_id):
         df = pd.read_csv(self.datalink, index_col=-1)
         after_start_date = df["data_somministrazione"] >= "2021-"+month+"-01"
         before_end_date = df["data_somministrazione"] <= "2021-"+month+"-31"

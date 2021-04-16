@@ -1,5 +1,7 @@
 from functools import partial
 
+import requests
+
 from covid_19.dashboard_field.utils import st_functional_columns
 from covid_19.dashboard_field.dashboard_chart import DashboardChart
 import streamlit as st
@@ -10,10 +12,11 @@ import pydeck as pdk
 
 class ChartBarVaccini(DashboardChart):
 
-    def __init__(self, name, title, subtitle, datalink, tipo = "Pydeck", widget_list=None):
+    def __init__(self, name, title, subtitle, datalink, posizione = st,  tipo = "Pydeck", widget_list=None):
         super().__init__(name, title, subtitle, widget_list=widget_list)
         self.datalink = datalink
         self.tipo = tipo
+        self.location = posizione
 
         self.traduci = {"abruzzo": "ABR", "basilicata": "BAS", "calabria": "CAL", "campania": "CAM",
                "emilia romagna": "EMR", "friuli venezia giulia": "FVG", "lazio": "LAZ",
@@ -34,22 +37,25 @@ class ChartBarVaccini(DashboardChart):
 
     def show(self):
         self.show_heading()
-        regione, mese = self.show_widgets()[0]
+        with self.location:
+            regione, mese = self.show_widgets()[0]
         for reg in self.traduci:
             if reg == regione:
                 regione = self.traduci[regione]
                 break
 
         with st.spinner("Sto scaricando i dati aggiornati da GitHub"):
-            df = self.read_data_from_git(regione, mese)
+            r = requests.head(self.datalink)
+            code = r.headers['Content-Length']
+            df = self.read_data_from_git(regione, mese, code)
 
         with st.spinner("Sto creando il barchart"):
             chart = self.get_chart(df)
 
-        st.altair_chart(chart, use_container_width=True)
+        self.location.altair_chart(chart, use_container_width=True)
 
-    @st.cache(show_spinner=False)
-    def read_data_from_git(self, region, month):
+    #@st.cache(show_spinner=False)
+    def read_data_from_git(self, region, month, code):
         df = pd.read_csv(self.datalink, index_col=-1)
         in_region = df["area"] == region
         after_start_date = df["data_somministrazione"] >= "2021-"+month+"-01"
@@ -71,7 +77,8 @@ class ChartBarVaccini(DashboardChart):
         small = small.melt(id_vars='data_somministrazione', var_name='categoria', value_name='numero_vaccini')
         return small
 
-    @st.cache(show_spinner=False, allow_output_mutation=True)
+
+    #@st.cache(show_spinner=False, allow_output_mutation=True)
     def get_chart(self, df):
         return alt.Chart(df).mark_bar().encode(
             x=alt.X('sum(numero_vaccini)', title="Totale dosi somministrate"),

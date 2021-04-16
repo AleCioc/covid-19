@@ -27,7 +27,7 @@ class ChartPydeckMap(DashboardChart):
             deck = self.get_map(a, 40.5183188, 12.516667,  5, st.secrets["token"])
         st.pydeck_chart(deck)
 
-    @st.cache(show_spinner=False)
+    #bisogna trovare un modo intelligente per cachare qua. Provare con conditional get http
     def read_data_from_git(self):
         df = pd.read_csv(self.datalink, index_col=0)
         df = df.replace("Valle d'Aosta / Vallée d'Aoste", "Valle d'Aosta/Vallée d'Aoste")
