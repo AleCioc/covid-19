@@ -30,7 +30,6 @@ class ChartBarVacciniItalia(DashboardChart):
             r = requests.head(self.datalink)
             code = r.headers['Content-Length']
             df = self.read_data_from_git(mese, code)
-        st.dataframe(df)
         with st.spinner("Sto creando il barchart"):
             chart = self.get_chart(df)
 
