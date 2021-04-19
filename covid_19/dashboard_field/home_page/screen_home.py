@@ -20,11 +20,10 @@ class ScreenHome(DashboardScreen):
 
     def __init__(self, title, name, chart_list=None, subtitle=None, widget_list = None):
         super().__init__(title,name,chart_list,subtitle, widget_list)
-        self.chart_dict = {}
         self.data = get_norm_data()
 
     def show_charts(self):
-
+        self.data = get_norm_data()
         name = "Ultime notizie"
         DashboardReport(name, self.get_last_day(self.data), "italia").show()
 
