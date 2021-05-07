@@ -69,10 +69,14 @@ class ChartBarVaccini(DashboardChart):
                                 'categoria_ospiti_rsa': "Ospiti RSA",
                                 'categoria_over80': "Over 80",
                                 "categoria_forze_armate": "Forze armate",
-                                "categoria_personale_scolastico": "Personale scolastico"})
+                                "categoria_personale_scolastico": "Personale scolastico",
+                                "categoria_soggetti_fragili": "Soggetti fragili",
+                                "categoria_60_69": "60-69",
+                                "categoria_70_79": "70-79"
+                                })
         small = df[["data_somministrazione", "Operatori (socio)sanitari"
             , 'Personale non sanitario', 'Altro',
-                    'Ospiti RSA', 'Over 80', 'Forze armate', 'Personale scolastico']]
+                    'Ospiti RSA', 'Over 80', 'Forze armate', 'Personale scolastico', "Soggetti fragili", "60-69", "70-79"]]
         small = small.sort_values("data_somministrazione")
         small = small.melt(id_vars='data_somministrazione', var_name='categoria', value_name='numero_vaccini')
         return small
@@ -84,6 +88,6 @@ class ChartBarVaccini(DashboardChart):
             x=alt.X('sum(numero_vaccini)', title="Totale dosi somministrate"),
             y=alt.Y('data_somministrazione', title="Data di somministrazione"),
             color=alt.Color('categoria',
-                            legend=alt.Legend(title="Categorie", orient="top", titleAlign="left", labelAlign="left",
+                            legend=alt.Legend(title="Categorie", orient="right", titleAlign="left", labelAlign="left",
                                               labelFontSize=8)),
             tooltip=["data_somministrazione", "categoria", "numero_vaccini"])

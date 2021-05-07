@@ -39,7 +39,7 @@ class ChartBarVax(DashboardChart):
         grouped = grouped[["fornitore", 'categoria_operatori_sanitari_sociosanitari',
                            'categoria_personale_non_sanitario', 'categoria_ospiti_rsa',
                            'categoria_over80', 'categoria_forze_armate',
-                           'categoria_personale_scolastico', 'categoria_altro']]
+                           'categoria_personale_scolastico', 'categoria_altro', "categoria_soggetti_fragili", "categoria_60_69", "categoria_70_79"]]
 
         grouped = grouped.rename(columns={'categoria_operatori_sanitari_sociosanitari': '(Socio)Sanitari',
                                           'categoria_personale_non_sanitario': 'Non sanitario',
@@ -47,7 +47,11 @@ class ChartBarVax(DashboardChart):
                                           'categoria_ospiti_rsa': "Ospiti RSA",
                                           'categoria_over80': "Over 80",
                                           "categoria_forze_armate": "Forze armate",
-                                          "categoria_personale_scolastico": "Scolastico"})
+                                          "categoria_personale_scolastico": "Scolastico",
+                                          "categoria_soggetti_fragili": "Soggetti fragili",
+                                          "categoria_60_69": "60-69",
+                                          "categoria_70_79": "70-79"
+                                          })
         grouped = grouped.melt(id_vars='fornitore', var_name='categoria', value_name='numero_vaccini')
         return grouped
 
