@@ -30,6 +30,7 @@ class ChartMap(DashboardChart):
         #come parametri avro' parametro da valutare e il giorno
         giorno, parametro = (self.show_widgets())[0]
 
+
         gdf = gpd.read_file(os.path.join(os.curdir, "covid_19", "data_manager", "italy-with-regions", "reg2011_g.shp"))
 
         ax = gdf.plot(
