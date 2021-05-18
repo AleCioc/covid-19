@@ -3,8 +3,50 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 from covid_19.data_manager.plotter.bokeh_plotter import plot_df_lines_bokeh, get_bokeh_plotter
-
+import altair as alt
 graph_types = [ "tamponi", "totali_principali", "nuovi_principali", "tassi_principali", "dettaglio_pazienti_attuali", "tassi_condizioni_cliniche"]
+
+
+def altair_plotter(dataplot):
+
+    source = dataplot.reset_index()
+
+
+    shown_names = [" ".join(x.split("_")).title() for x in source.columns]
+
+    traduci = {source.columns[i]: shown_names[i] for i in range(len(shown_names))}
+    traduci["index"]="Data"
+    source = source.rename(columns=traduci)
+
+    source = source.melt('Data', var_name='category', value_name='y')
+
+    hover = alt.selection_single(
+        fields=["Data"],
+        nearest=True,
+        on="mouseover",
+        empty="none",
+        clear="mouseout"
+    )
+
+    lines = alt.Chart(source).mark_line().encode(
+        x=alt.X('Data:T', title="Data"),
+        y=alt.Y('y:Q', title="Andamento"),
+        color=alt.Color('category:N', legend=alt.Legend(orient="top", title="Andamenti"))
+    )
+
+    points = lines.transform_filter(hover).mark_circle()
+
+    tt = ["Data:T"] + [val + ":Q" for val in shown_names]
+
+    tooltips = alt.Chart(source).transform_pivot(
+        "category", "y", groupby=["Data"]
+    ).mark_rule().encode(
+        x='Data:T',
+        opacity=alt.condition(hover, alt.value(0.3), alt.value(0)),
+        tooltip=tt
+    ).add_selection(hover).properties(height=450).interactive()
+
+    st.altair_chart(lines + points + tooltips, use_container_width=True)
 
 
 def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard_flag, type, tipo="Altair"):
@@ -57,7 +99,11 @@ def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard
     if tipo == "Bokeh":
         st.bokeh_chart(get_bokeh_plotter(cases_df, figures_path, geo_name, plot_dashboard_flag, type), use_container_width=True)
     elif tipo == "Altair":
+        altair_plotter(dataplot)
+
+    elif tipo == "Streamlit":
         st.line_chart(dataplot)
+
     elif tipo == "Pyplot":
         fig, ax = plt.subplots()
         for colonna in dataplot.columns:

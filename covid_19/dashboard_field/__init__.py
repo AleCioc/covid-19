@@ -23,7 +23,7 @@ def create_screens_list():
     sub4 = "In questa sezione è possibile analizzare l'andamento della somministrazione dei vaccini in Italia e nelle varie regioni."
 
     home_screen = ScreenHome("Home Page", "Home Page", subtitle=sub0)
-    widget_nazione = [partial(st.sidebar.selectbox, "Scegli quale libreria di plotting utilizzare", ["Altair", "Bokeh", "Pyplot"])]
+    widget_nazione = [partial(st.sidebar.selectbox, "Scegli quale libreria di plotting utilizzare", ["Altair", "Bokeh", "Pyplot", "Streamlit"])]
     andamento_nazionale = ScreenNazione("Andamento nazionale", "Andamento nazionale", subtitle=sub1,  widget_list=widget_nazione)
     andamento_regionale = ScreenRegione("Andamento regionale", "Andamento regionale", subtitle=sub2)
     confronti = ScreenConfronti("Confronti tra regioni", "Confronti tra regioni", subtitle=sub3)
