@@ -28,9 +28,12 @@ class ChartBarVaccini(DashboardChart):
                 , "veneto": "VEN"}
 
         #due widget, uno per scegliere la regione e uno per il mese
+        import datetime
+        l = ["0" + str(i) if i < 10 else str(i) for i in range(1, 1 + datetime.datetime.now().month)]
+        l.reverse()
         wl = [
             ["selectbox", "Di quale regione?", list(self.traduci.keys())],
-            ["selectbox", "Di quale mese?" , ["01", "02", "03", "04", "05"]]
+            ["selectbox", "Di quale mese?" , l]
         ]
 
         self.widget_list = [ partial(st_functional_columns, wl)]

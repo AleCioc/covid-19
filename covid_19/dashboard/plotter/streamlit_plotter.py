@@ -6,6 +6,83 @@ from covid_19.data_manager.plotter.bokeh_plotter import plot_df_lines_bokeh, get
 import altair as alt
 graph_types = [ "tamponi", "totali_principali", "nuovi_principali", "tassi_principali", "dettaglio_pazienti_attuali", "tassi_condizioni_cliniche"]
 
+def graficoQuattro(data):
+    source = data[["data", "attualmente_ricoverati",
+                                                  "attualmente_terapia_intensiva",
+                                                  "attualmente_isolamento_domiciliare"]]
+
+    shown_names = [" ".join(x.split("_")).title() for x in source.columns]
+
+    traduci = {source.columns[i]: shown_names[i] for i in range(len(shown_names))}
+    source = source.rename(columns=traduci)
+
+    source = source.melt('Data', var_name='category', value_name='y')
+
+    area = alt.Chart(source).mark_area().encode(
+        alt.X('Data:T',
+              # axis=alt.Axis(format='%Y', domain=False, tickSize=0)
+              ),
+        alt.Y('sum(y):Q', stack='center', axis=None),
+        alt.Color('category:N',
+                  scale=alt.Scale(scheme='dark2'),
+                  legend=alt.Legend(orient="top", title="Distribuzione positivi")
+                  )
+    ).interactive()
+
+    hover = alt.selection_single(
+        fields=["Data"],
+        nearest=True,
+        on="mouseover",
+        empty="none",
+        clear="mouseout"
+    )
+
+    tt = ["Data:T"] + [val + ":Q" for val in shown_names]
+
+    tooltips = alt.Chart(source).transform_pivot(
+        "category", "y", groupby=["Data"]
+    ).mark_rule().encode(
+        x='Data:T',
+        opacity=alt.condition(hover, alt.value(0.3), alt.value(0)),
+        tooltip=tt
+    ).add_selection(hover).properties(height=450).interactive()
+
+    st.altair_chart(area + tooltips, use_container_width=True)
+
+def graficoZero(data):
+    source = data[["data", "nuovi_attualmente_positivi"]]
+
+    shown_names = [" ".join(x.split("_")).title() for x in source.columns]
+
+    traduci = {source.columns[i]: shown_names[i] for i in range(len(shown_names))}
+    source = source.rename(columns=traduci)
+
+    source = source.melt('Data', var_name='category', value_name='y')
+
+    source2 = data[["data", "totale_attualmente_positivi"]]
+    source2["totale_attualmente_positivi"] = source2["totale_attualmente_positivi"] / 100000
+    line = alt.Chart(source2).mark_line().encode(
+        x=alt.X('data:T', title=""),
+        y=alt.Y('totale_attualmente_positivi:Q', title="Totale attualmente positivi (centinaia di migliaia)"),
+        color=alt.value("#FFAA00")
+    )
+
+    bar = alt.Chart(source).mark_bar().encode(
+        x="Data:T",
+        y=alt.Y("y:Q", title="Nuovi attualmente positivi"),
+        color=alt.condition(
+            alt.datum.y > 0,
+            alt.value("red"),  # The positive color
+            alt.value("green")  # The negative color
+        )
+    )
+
+    a = alt.layer(bar, line).resolve_scale(
+        y='independent'
+    ).properties(height=450).interactive()
+
+    st.altair_chart(a, use_container_width=True)
+
 
 def altair_plotter(dataplot):
 
@@ -55,10 +132,9 @@ def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard
         return
 
     if type == graph_types[0]:
-        dataplot = pd.DataFrame(cases_df, columns=[
-                "totale_tamponi",
-                "totale_casi",
-            ])
+        # tipo zero, grafico cambiato.
+        graficoZero(cases_df)
+        return
     elif type == graph_types[1]:
         dataplot = pd.DataFrame(cases_df, columns=[
                      "totale_attualmente_positivi",
@@ -80,11 +156,8 @@ def plot_lines_dashboard_ita_st(cases_df, figures_path, geo_name, plot_dashboard
                  "tasso_guarigione"
         ])
     elif type == graph_types[4]:
-        dataplot = pd.DataFrame(cases_df, columns=[
-            "attualmente_isolamento_domiciliare",
-            "attualmente_ricoverati",
-            "attualmente_terapia_intensiva"
-        ])
+        graficoQuattro(cases_df)
+        return
     elif type == graph_types[5]:
         dataplot = pd.DataFrame(cases_df, columns=[
             "tasso_ricoverati_con_sintomi",

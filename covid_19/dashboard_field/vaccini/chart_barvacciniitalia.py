@@ -16,8 +16,13 @@ class ChartBarVacciniItalia(DashboardChart):
         self.datalink = datalink
         self.tipo = tipo
         #due widget, uno per scegliere la regione e uno per il mese
+
+        import datetime
+        l = [ "0"+str(i) if i < 10 else str(i) for i in range(1, 1+datetime.datetime.now().month) ]
+        l.reverse()
+
         wl = [
-            ["selectbox", "Di quale mese vuoi vedere i dati?" , ["01", "02", "03", "04", "05"]]
+            ["selectbox", "Di quale mese vuoi vedere i dati?" , l]
         ]
 
         self.widget_list = [ partial(st_functional_columns, wl)]
@@ -42,6 +47,7 @@ class ChartBarVacciniItalia(DashboardChart):
         before_end_date = df["data_somministrazione"] <= "2021-"+month+"-31"
         between_two_dates_and_in = after_start_date & before_end_date
         df = df.loc[between_two_dates_and_in]
+
 
         df = df.rename(columns={'categoria_operatori_sanitari_sociosanitari': 'Operatori (socio)sanitari',
                                 'categoria_personale_non_sanitario': 'Personale non sanitario',

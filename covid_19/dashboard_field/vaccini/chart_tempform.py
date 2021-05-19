@@ -49,9 +49,28 @@ class ChartTempForm(DashboardChart):
 
     @st.cache(show_spinner=False, allow_output_mutation=True)
     def get_chart(self, df):
-        return alt.Chart(df).mark_line().encode(
+        lines =  alt.Chart(df).mark_line().encode(
             x=alt.X('data_somministrazione:T', title="Data di somministrazione"),
             y=alt.Y('totali', title= "Numero di vaccini somministrati"),
             color=alt.Color('fornitore', title="Fornitore", legend=alt.Legend(orient="top"), sort=["Totali"]),
-            tooltip=["data_somministrazione:T", "fornitore", "totali"]
-)
+            )
+        hover = alt.selection_single(
+            fields=["data_somministrazione"],
+            nearest=True,
+            on="mouseover",
+            empty="none",
+            clear="mouseout"
+        )
+
+        points = lines.transform_filter(hover).mark_circle()
+        tt = ["data_somministrazione:T", "Totali:Q", "Pfizer/BioNTech:Q", "Moderna:Q", "Vaxzevria (AstraZeneca):Q", "Janssen:Q"]
+
+        tooltips = alt.Chart(df).transform_pivot(
+            "fornitore", "totali", groupby=["data_somministrazione"]
+        ).mark_rule().encode(
+            x='data_somministrazione:T',
+            opacity=alt.condition(hover, alt.value(0.3), alt.value(0)),
+            tooltip=tt
+        ).add_selection(hover).properties(height=450).interactive()
+
+        return lines + points + tooltips

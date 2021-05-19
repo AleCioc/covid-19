@@ -10,7 +10,7 @@ graph_types = [ "tamponi", "totali_principali", "nuovi_principali", "tassi_princ
 NUMERO_GRAFICI = len(graph_types)
 
 graph_titles = [
-    "Totale tamponi",
+    "Andamento nuovi positivi",
     "Totale principali",
     "Nuovi principali",
     "Tassi principali",
@@ -19,7 +19,7 @@ graph_titles = [
 
 ]
 graph_subtitles = [
-    "Questo grafico mostra l'andamento temporale del numero di tamponi effettuati. Nello stesso grafico viene anche mostrato il numero totale di casi.",
+    "In questo grafico è possibile visualizzare contemporaneamente la variazione giornaliera di nuovi positivi (mostrato dal grafico a barre, dove il rosso significa un incremento e il verde un decremento) e il totale di persone positive giorno per giorno (la linea arancione, la cui scala, in centinaia di migliaia, è riportata sulla destra)",
     "Questo grafico mostra l'andamento temporale dei tre valori principali: attualmente positivi, deceduti e guariti.",
     "Questo grafico mostra le variazioni giornaliere dei nuovi positivi, degli attualmente positivi, dei deceduti e dei guariti.",
     "Questo grafico riporta i principali tassi (positivi, mortalità, tamponi positivi, mortalità).",

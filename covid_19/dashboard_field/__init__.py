@@ -16,9 +16,9 @@ from functools import partial
 @st.cache(allow_output_mutation=True, show_spinner=False)
 def create_screens_list():
 
-    sub0 = "Benvenuto nella pagina introduttiva della dashboard. Potete trovare delle informazioni aggiornate sull'andamento del COVID in italia. Utilizzando il menù sulla sinistra è possibile approfondire dati a livello nazionale, regionale, effettuare dei confronti e analizzare l'andamento delle vaccinazioni."
-    sub1 = "In questa schermata puoi visualizzare dati con aggregazione nazionale. Per ogni grafico è riportato il titolo e una breve descrizione. Inoltre, cliccando sull'expander, è possibile visualizzare i dati utilizzati."
-    sub2 = "In questa schermata puoi visualizzare dati con aggregazione regionale."
+    sub0 = "Benvenuto nella pagina introduttiva della dashboard. Potete trovare delle informazioni aggiornate sull'andamento del COVID in Italia. Utilizzando il menù sulla sinistra è possibile approfondire dati a livello nazionale, regionale, effettuare dei confronti e analizzare l'andamento delle vaccinazioni."
+    sub1 = "In questa schermata puoi visualizzare dati con aggregazione nazionale. Per ogni grafico è riportato il titolo e una breve descrizione. Inoltre, cliccando sull'expander, è possibile visualizzare i dati utilizzati. \nTutti i grafici sono interattivi (è possibile zoommare e spostare la vista sul periodo interessato). Inoltre, in quasi tutti, è possibile leggere i valori esatti passando con il mouse sul grafico."
+    sub2 = "In questa schermata puoi visualizzare dati con aggregazione regionale. \nTutti i grafici sono interattivi (è possibile zoommare e spostare la vista sul periodo interessato). Inoltre, in quasi tutti, è possibile leggere i valori esatti passando con il mouse sul grafico."
     sub3 = "In questa schermata puoi confrontare i dati di regioni diverse."
     sub4 = "In questa sezione è possibile analizzare l'andamento della somministrazione dei vaccini in Italia e nelle varie regioni."
 
