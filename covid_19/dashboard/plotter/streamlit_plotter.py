@@ -8,8 +8,8 @@ graph_types = [ "tamponi", "totali_principali", "nuovi_principali", "tassi_princ
 
 def graficoQuattro(data):
     source = data[["data", "attualmente_ricoverati",
-                                                  "attualmente_terapia_intensiva",
-                                                  "attualmente_isolamento_domiciliare"]]
+                                                  "attualmente_terapia_intensiva"
+                                                  ]]
 
     shown_names = [" ".join(x.split("_")).title() for x in source.columns]
 
