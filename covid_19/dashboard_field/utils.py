@@ -23,7 +23,7 @@ graph_subtitles = [
     "Questo grafico mostra l'andamento temporale dei tre valori principali: attualmente positivi, deceduti e guariti.",
     "Questo grafico mostra le variazioni giornaliere dei nuovi positivi, degli attualmente positivi, dei deceduti e dei guariti.",
     "Questo grafico riporta i principali tassi (positivi, mortalità, tamponi positivi, mortalità).",
-    "Questo grafico si focalizza su come sono distribuiti i positivi tra isolamento domiciliare, ricoverati e in terapia intensiva.",
+    "Questo grafico si focalizza su come sono distribuiti i positivi tra ricoverati e in terapia intensiva.",
     "Questo grafico si focalizza sui tassi dei pazienti in isolamento domiciliare, ricoverati e in terapia intensiva."
 
 ]
