@@ -24,7 +24,7 @@ class ScreenVaccini(DashboardScreen):
 
 
 
-
+        """
         name = "Andamento vaccinazioni per categorie a livello nazionale"
         subtitle = "In questo grafico è possibile selezionare un mese. Verrà mostrato, giorno per giorno, il numero di" \
                    " vaccini effettuati per ogni categoria. Passando con il mouse sopra il grafico è possibile leggere i valori esatti."
@@ -46,6 +46,7 @@ class ScreenVaccini(DashboardScreen):
         dati = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/somministrazioni-vaccini-latest.csv"
 
         ChartBarVax(name, name, subtitle, dati).show()
+        """
 
         name = "Andamento temporale somministrazione per case farmaceutiche"
         subtitle = "In questo grafico viene mostrato l'andamento temporale del numero di dosi somministrate per ogni tipo di vaccino a disposizione."

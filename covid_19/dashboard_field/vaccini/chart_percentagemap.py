@@ -27,6 +27,7 @@ class ChartPercentageMap(DashboardChart):
 
     def show(self):
         self.show_heading()
+        st.warning("Dati aggiornati al *30/4/2021*.")
         categoria = self.show_widgets()[0][0]
 
         with st.spinner("Sto scaricando i dati aggiornati da GitHub"):
