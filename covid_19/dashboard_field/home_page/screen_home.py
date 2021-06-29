@@ -28,17 +28,18 @@ class ScreenHome(DashboardScreen):
         DashboardReport(name, self.get_last_day(self.data), "italia").show()
 
         name = "Andamento zone di rischio"
+        st.success("Al momento tutte le regioni d'Italia sono in zona bianca.")
         subtitle = "In questa carta di Gantt è possibile visualizzare l'andamento temporale delle zone di rischio in italia. Passando con" \
                    " il mouse sopra il grafico è possibile vedere la data a cui fan riferimento quei dati."
         dati = "https://raw.githubusercontent.com/imcatta/restrizioni_regionali_covid/main/dataset.csv"
 
-        ChartAndamentoColori(name, name, subtitle, dati).show()
+        #ChartAndamentoColori(name, name, subtitle, dati).show()
 
         name = "Zone di rischio in Italia"
         subtitle = "In questa mappa è possibile visualizzare le zone di rischio attualmente in vigore in Italia."
         dati = "https://raw.githubusercontent.com/imcatta/restrizioni_regionali_covid/main/dataset.csv"
 
-        ChartColori(name, name, subtitle, dati).show()
+        #ChartColori(name, name, subtitle, dati).show()
 
 
 

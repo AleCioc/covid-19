@@ -1,3 +1,4 @@
+import datetime
 from functools import lru_cache
 import requests
 import time
@@ -31,7 +32,10 @@ class ChartColori(DashboardChart):
 
     def read_data_from_git(self):
         df = pd.read_csv(self.datalink)
-        df = df.loc[df.data == max(df.data)].reset_index()
+
+        df["m"] = df["data"].apply(
+            lambda t: datetime.datetime.fromisoformat(str(t)) == datetime.datetime.now())
+        df =  df[df["m"] == 1]
 
         df = df.replace({"Friuli Venezia Giulia": "Friuli-Venezia Giulia",
                          "Provincia autonoma Bolzano": "Trentino-Alto Adige/Südtirol",

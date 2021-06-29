@@ -41,7 +41,10 @@ class ChartAndamentoColori(DashboardChart):
 
         df["end"] = df.data
         df["end"] = df["end"].apply(lambda t: datetime.datetime.fromisoformat(t) + datetime.timedelta(days=1))
-        return df
+        df["m"] = df["end"].apply(
+            lambda t: datetime.datetime.fromisoformat(str(t)) <= datetime.datetime.now())
+        return df[df["m"] == 1]
+
 
     @st.cache(show_spinner=False, allow_output_mutation=True)
     def get_chart(self, df):
