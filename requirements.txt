@@ -7,6 +7,6 @@ matplotlib==3.4.1
 altair==4.1.0
 bokeh==2.0.0
 Flask==1.1.2
-GitPython==3.1.14
+GitPython==3.1.30
 scikit_learn==0.24.1
 geojson==2.5.0
